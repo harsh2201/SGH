@@ -1,21 +1,39 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-export default class App extends React.Component {
+import React, { Component } from "react";
+import Login from "./screens/login";
+import Dashboard from "./screens/dashboard";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import { Ionicons } from "@expo/vector-icons";
+import AuthLoading from "./screens/authLoading";
+export default class App extends Component {
   render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
-    );
+    return <AppContainer />;
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const MainNavigator = createStackNavigator({
+  Home: Home
 });
+
+const RootNavigator = createSwitchNavigator({
+  AuthLoading: {
+    screen: AuthLoading,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  Login: {
+    screen: Login,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  MainNavigator: {
+    screen: MainNavigator,
+    navigationOptions: {
+      headerShown: false
+    }
+  }
+});
+
+const AppContainer = createAppContainer(RootNavigator);
