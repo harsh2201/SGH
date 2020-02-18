@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Login from "./screens/login";
-import Dashboard from "./screens/dashboard";
+import Login from "./src/login";
+import Home from "./src/mainScreen";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { Ionicons } from "@expo/vector-icons";
-import AuthLoading from "./screens/authLoading";
+import AuthLoading from "./src/authLoading";
 export default class App extends Component {
   render() {
     return <AppContainer />;
