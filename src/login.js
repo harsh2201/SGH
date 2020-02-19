@@ -1,25 +1,138 @@
 import React, { Component } from "react";
-import { 
-    View,
-    Text,
-    StyleSheet
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  TouchableHighlight,
+  Image,
+  Alert
 } from "react-native";
+import firebase from "./config";
 
-class login extends Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text>login</Text>
-            </View>
-        );
-    }
+export default class LoginView extends Component {
+  constructor(props) {
+    super(props);
+    state = {
+      email: "",
+      password: "",
+      user: null
+    };
+  }
+
+  _signIn = async () => {
+    await firebase
+      .auth()
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then(user => {
+        this.setState({ user });
+      })
+      .catch(e => {
+        alert(e);
+      });
+  };
+
+  onClickListener = viewId => {
+    Alert.alert("Alert", "Button pressed " + viewId);
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.inputContainer}>
+          <Image
+            style={styles.inputIcon}
+            source={{
+              uri: "https://png.icons8.com/message/ultraviolet/50/3498db"
+            }}
+          />
+          <TextInput
+            style={styles.inputs}
+            placeholder="Email"
+            keyboardType="email-address"
+            underlineColorAndroid="transparent"
+            onChangeText={email => this.setState({ email })}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Image
+            style={styles.inputIcon}
+            source={{
+              uri: "https://png.icons8.com/key-2/ultraviolet/50/3498db"
+            }}
+          />
+          <TextInput
+            style={styles.inputs}
+            placeholder="Password"
+            secureTextEntry={true}
+            underlineColorAndroid="transparent"
+            onChangeText={password => this.setState({ password })}
+          />
+        </View>
+
+        <TouchableHighlight
+          style={[styles.buttonContainer, styles.loginButton]}
+          onPress={() => this._signIn}
+        >
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight
+          style={styles.buttonContainer}
+          onPress={() => this.onClickListener("restore_password")}
+        >
+          <Text style={styles.loginText}>Forgot your password?</Text>
+        </TouchableHighlight>
+      </View>
+    );
+  }
 }
-export default login;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#6A5ACD"
+  },
+  inputContainer: {
+    borderBottomColor: "#F5FCFF",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    width: 250,
+    height: 45,
+    marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: "#FFFFFF",
+    flex: 1
+  },
+  inputIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 15,
+    justifyContent: "center"
+  },
+  buttonContainer: {
+    height: 45,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    width: 250,
+    borderRadius: 30
+  },
+  loginButton: {
+    backgroundColor: "#00b5ec"
+  },
+  loginText: {
+    color: "white"
+  }
 });

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import {
   StyleSheet,
   Text,
@@ -18,18 +17,23 @@ export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fill: 50,
+      count: 50,
       data: [
         // {id:1,  title: "You",      color:"#FF4500", image:"https://img.icons8.com/color/70/000000/name.png"},
         // {id:2,  title: "Home",     color:"#87CEEB", image:"https://img.icons8.com/office/70/000000/home-page.png"},
         // {id:3,  title: "Love",     color:"#4682B4", image:"https://img.icons8.com/color/70/000000/two-hearts.png"} ,
         {
           id: 4,
-          title: "",
+          title: "Attendance",
           color: "#6A5ACD",
           image: "https://img.icons8.com/color/70/000000/family.png"
+        },
+        {
+          id: 5,
+          title: "Food",
+          color: "#FF69B4",
+          image: "https://img.icons8.com/color/70/000000/groups.png"
         }
-        // {id:5,  title: "Food",  color:"#FF69B4", image:"https://img.icons8.com/color/70/000000/groups.png"} ,
         // {id:6,  title: "School",   color:"#00BFFF", image:"https://img.icons8.com/color/70/000000/classroom.png"} ,
         // {id:7,  title: "Things",   color:"#00FFFF", image:"https://img.icons8.com/dusk/70/000000/checklist.png"} ,
         // {id:8,  title: "World",    color:"#20B2AA", image:"https://img.icons8.com/dusk/70/000000/globe-earth.png"} ,
@@ -39,11 +43,14 @@ export default class Main extends Component {
     };
   }
 
+  clickEventListener = item => {
+    // Alert.alert(item.title)
+    this.props.navigation.navigate("Analytics", {
+      count: 50
+    });
+  };
+
   render() {
-    // const { params } = this.props.navigation.state;
-    // const { count } = params;
-    const { count } = this.props.navigation.state.params;
-    console.log("PROPS ", count);
     return (
       <View style={styles.container}>
         <FlatList
@@ -56,18 +63,15 @@ export default class Main extends Component {
           }}
           renderItem={({ item }) => {
             return (
-              <View style={[styles.card, { backgroundColor: item.color }]}>
-                <AnimatedCircularProgress
-                  size={120}
-                  width={15}
-                  fill={count}
-                  tintColor="#00e0ff"
-                  onAnimationComplete={() => console.log("onAnimationComplete")}
-                  backgroundColor="#3d5875"
-                >
-                  {fill => <Text style={styles.title}>{count}</Text>}
-                </AnimatedCircularProgress>
-              </View>
+              <TouchableOpacity
+                style={[styles.card, { backgroundColor: item.color }]}
+                onPress={() => {
+                  this.clickEventListener(item);
+                }}
+              >
+                {/* <Image style={styles.cardImage} source={{uri:item.image}}/> */}
+                <Text style={styles.title}>{item.title}</Text>
+              </TouchableOpacity>
             );
           }}
         />
@@ -78,8 +82,8 @@ export default class Main extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-    // marginTop: 20
+    flex: 1,
+    marginTop: 20
   },
   list: {
     //paddingHorizontal: 5,
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
   /******** card **************/
   card: {
     width: width,
-    height: height,
+    height: height / 2,
     flexDirection: "row",
     padding: 20,
 
@@ -102,13 +106,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    // flex: 1,
+    flex: 1,
     color: "#FFFFFF",
-    fontWeight: "bold"
+    fontWeight: "bold",
     // marginLeft:40,
-    // alignContent: "center",
-    // justifyContent: "center",
-    // textAlign: "center"
+    alignContent: "center",
+    justifyContent: "center",
+    textAlign: "center"
   },
   subTitle: {
     fontSize: 12,
