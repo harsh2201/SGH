@@ -4,42 +4,49 @@ import {
   Text,
   View,
   TextInput,
-  Button,
   TouchableHighlight,
-  Image,
-  Alert
+  Image
 } from "react-native";
 import firebase from "./config";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default class LoginView extends Component {
   constructor(props) {
     super(props);
-    state = {
+    this.state = {
       email: "",
       password: "",
-      user: null
+      visibility: false
     };
   }
 
   _signIn = async () => {
+    this.setState({ visibility: true });
+    if (this.state.email === "" || this.state.password === "") {
+      alert("Email or password is empty !!");
+      this.setState({ visibility: false });
+      return;
+    }
     await firebase
       .auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then(user => {
-        this.setState({ user });
-      })
       .catch(e => {
-        alert(e);
+        alert("Something went wrong");
       });
-  };
-
-  onClickListener = viewId => {
-    Alert.alert("Alert", "Button pressed " + viewId);
+    this.setState({ visibility: false });
   };
 
   render() {
     return (
       <View style={styles.container}>
+        <Spinner
+          visible={this.state.visibility}
+          textContent={"Loading..."}
+          textStyle={{
+            color: "#FFF"
+          }}
+          overlayColor="rgba(0, 0, 0, 0.8)"
+        />
         <View style={styles.inputContainer}>
           <Image
             style={styles.inputIcon}
@@ -74,14 +81,16 @@ export default class LoginView extends Component {
 
         <TouchableHighlight
           style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this._signIn}
+          onPress={() => this._signIn()}
         >
           <Text style={styles.loginText}>Login</Text>
         </TouchableHighlight>
 
         <TouchableHighlight
           style={styles.buttonContainer}
-          onPress={() => this.onClickListener("restore_password")}
+          onPress={() => {
+            firebase.auth().sendPasswordResetEmail(this.state.email);
+          }}
         >
           <Text style={styles.loginText}>Forgot your password?</Text>
         </TouchableHighlight>

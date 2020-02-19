@@ -4,11 +4,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
-  Alert,
-  ScrollView,
-  TextInput,
-  FlatList
+  FlatList,
+  Dimensions
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Switch } from "react-native-paper";
@@ -43,28 +40,6 @@ export default class Users extends Component {
       ]
     };
   }
-
-  cardClickEventListener = item => {
-    Alert.alert(item.name);
-  };
-
-  tagClickEventListener = tagName => {
-    Alert.alert(tagName);
-  };
-
-  renderTags = item => {
-    return item.tags.map((tag, key) => {
-      return (
-        <TouchableOpacity
-          key={key}
-          style={styles.btnColor}
-        >
-          <Text>{tag}</Text>
-        </TouchableOpacity>
-      );
-    });
-  };
-
   render() {
     const a = 2;
     return (
@@ -91,19 +66,17 @@ export default class Users extends Component {
               >
                 <View style={styles.cardContent}>
                   <AnimatedCircularProgress
-                    size={50}
-                    width={4}
-                    fill={60}
+                    size={100}
+                    width={8}
+                    fill={39}
                     tintColor="#00e0ff"
                     backgroundColor="#3d5875"
                   >
-                    {fill => <Text>60%</Text>}
+                    {fill => <Text>{fill}/1000</Text>}
                   </AnimatedCircularProgress>
                   <Text style={styles.name}>{item.name}</Text>
                 </View>
-                <View style={[styles.cardContent, styles.tagsContent]}>
-                  {this.renderTags(item)}
-                </View>
+                <View style={[styles.cardContent, styles.tagsContent]}></View>
               </TouchableOpacity>
             );
           }}
@@ -159,6 +132,8 @@ const styles = StyleSheet.create({
   },
   card: {
     height: null,
+    width: Dimensions.get("window").width,
+    justifyContent: "center",
     paddingTop: 10,
     paddingBottom: 10,
     marginTop: 5,
