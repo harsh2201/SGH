@@ -8,6 +8,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import { Ionicons } from "@expo/vector-icons";
 import AuthLoading from "./src/authLoading";
 import config from "./src/config"
+import Labinfo from './src/Labinfo';
 export default class App extends Component {
   render() {
     return <AppContainer />;
@@ -15,20 +16,26 @@ export default class App extends Component {
 }
 
 const MainNavigator = createStackNavigator({
-  Main: {
-    screen: Main,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
-  Analytics: {
-    screen: Analytics,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
-  Home: {
-    screen: Home,
+  // Main: {
+  //   screen: Main,
+  //   navigationOptions: {
+  //     headerShown: false
+  //   }
+  // },
+  // Analytics: {
+  //   screen: Analytics,
+  //   navigationOptions: {
+  //     headerShown: false
+  //   }
+  // },
+  // Home: {
+  //   screen: Home,
+  //   navigationOptions: {
+  //     headerShown: false
+  //   }
+  // },
+  Labinfo: {
+    screen: Labinfo,
     navigationOptions: {
       headerShown: false
     }
@@ -42,12 +49,12 @@ const RootNavigator = createSwitchNavigator({
   //     headerShown: false
   //   }
   // },
-  Login: {
-    screen: Login,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
+  // Login: {
+  //   screen: Login,
+  //   navigationOptions: {
+  //     headerShown: false
+  //   }
+  // },
   MainNavigator: {
     screen: MainNavigator,
     navigationOptions: {
