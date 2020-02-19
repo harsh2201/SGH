@@ -12,43 +12,45 @@ import {
 } from "react-native";
 
 var { height, width } = Dimensions.get("window");
+// lab volun LV - attendance index - 0
+// food volun FV - food scan index - 2
+// food coor FC - food scan and food analysis + switch + past log index - 2, 3
+// studen coor SC - lab analysis switch and past log index - 1
+// admin A - analysis + fc + sc - switch - scan index - 1 without switch,3 without switch
 
-export default class Main extends Component {
+export default class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      count: 50,
       data: [
-        // {id:1,  title: "You",      color:"#FF4500", image:"https://img.icons8.com/color/70/000000/name.png"},
-        // {id:2,  title: "Home",     color:"#87CEEB", image:"https://img.icons8.com/office/70/000000/home-page.png"},
-        // {id:3,  title: "Love",     color:"#4682B4", image:"https://img.icons8.com/color/70/000000/two-hearts.png"} ,
+        {
+          id: 1,
+          title: "Lab Attendance",
+          color: "#FF4500",
+          image: "https://img.icons8.com/color/70/000000/name.png"
+        },
+
+        {
+          id: 3,
+          title: "Lab Attendance Analysis",
+          color: "#4682B4",
+          image: "https://img.icons8.com/color/70/000000/two-hearts.png"
+        },
+        {
+          id: 2,
+          title: "Food Scan",
+          color: "#87CEEB",
+          image: "https://img.icons8.com/office/70/000000/home-page.png"
+        },
         {
           id: 4,
-          title: "Attendance",
+          title: "Food Analysis",
           color: "#6A5ACD",
           image: "https://img.icons8.com/color/70/000000/family.png"
         },
-        {
-          id: 5,
-          title: "Food",
-          color: "#FF69B4",
-          image: "https://img.icons8.com/color/70/000000/groups.png"
-        }
-        // {id:6,  title: "School",   color:"#00BFFF", image:"https://img.icons8.com/color/70/000000/classroom.png"} ,
-        // {id:7,  title: "Things",   color:"#00FFFF", image:"https://img.icons8.com/dusk/70/000000/checklist.png"} ,
-        // {id:8,  title: "World",    color:"#20B2AA", image:"https://img.icons8.com/dusk/70/000000/globe-earth.png"} ,
-        // {id:9,  title: "Remember", color:"#191970", image:"https://img.icons8.com/color/70/000000/to-do.png"} ,
-        // {id:10, title: "Game",     color:"#008080", image:"https://img.icons8.com/color/70/000000/basketball.png"} ,
       ]
     };
   }
-
-  clickEventListener = item => {
-    // Alert.alert(item.title)
-    this.props.navigation.navigate("Analytics", {
-      count: 50
-    });
-  };
 
   render() {
     return (
@@ -65,11 +67,8 @@ export default class Main extends Component {
             return (
               <TouchableOpacity
                 style={[styles.card, { backgroundColor: item.color }]}
-                onPress={() => {
-                  this.clickEventListener(item);
-                }}
+                onPress={() => {}}
               >
-                {/* <Image style={styles.cardImage} source={{uri:item.image}}/> */}
                 <Text style={styles.title}>{item.title}</Text>
               </TouchableOpacity>
             );
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
   /******** card **************/
   card: {
     width: width,
-    height: height / 2,
+    height: 150,
     flexDirection: "row",
     padding: 20,
 
@@ -109,10 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#FFFFFF",
     fontWeight: "bold",
-    // marginLeft:40,
-    alignContent: "center",
-    justifyContent: "center",
-    textAlign: "center"
+    marginLeft: 40
   },
   subTitle: {
     fontSize: 12,

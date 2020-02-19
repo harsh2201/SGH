@@ -17,24 +17,24 @@ export default class App extends Component {
 }
 
 const MainNavigator = createStackNavigator({
-  // Main: {
-  //   screen: Main,
-  //   navigationOptions: {
-  //     headerShown: false
-  //   }
-  // },
-  // Analytics: {
-  //   screen: Analytics,
-  //   navigationOptions: {
-  //     headerShown: false
-  //   }
-  // },
-  // Home: {
-  //   screen: Home,
-  //   navigationOptions: {
-  //     headerShown: false
-  //   }
-  // },
+  Main: {
+    screen: Main,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  Analytics: {
+    screen: Analytics,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  Home: {
+    screen: Home,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
   Labinfo: {
     screen: Labinfo,
     navigationOptions: {

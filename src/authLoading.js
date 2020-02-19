@@ -6,7 +6,7 @@ class authLoading extends Component {
   componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        this.props.navigation.navigate("MainNavigator");
+        this.props.navigation.navigate("MainNavigator", { user: user });
         console.log(user);
       } else {
         this.props.navigation.navigate("Login");
