@@ -62,7 +62,7 @@ export default class Menu extends Component {
       .once("value")
       .then(dataSnapshot => {
         // var access = dataSnapshot.val().Access;
-        var access = "SC";
+        var access = "";
         var temp = [];
         if (access === "SC") {
           temp.push(this.state.data[1]);

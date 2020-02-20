@@ -19,44 +19,47 @@ export default class App extends Component {
   }
 }
 
-const MainNavigator = createStackNavigator({
-  Main: {
-    screen: Main,
-    navigationOptions: {
-      headerShown: false
+const MainNavigator = createStackNavigator(
+  {
+    Main: {
+      screen: Main,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    FoodAnalysis: {
+      screen: FoodAnalysis,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    Home: {
+      screen: Home,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    LabAnalysis: {
+      screen: LabAnalysis,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    FoodScan: {
+      screen: FoodScan,
+      navigationOptions: {
+        headerShown: false
+      }
+    },
+    LabAttendance: {
+      screen: LabAttendance,
+      navigationOptions: {
+        headerShown: false
+      }
     }
   },
-  FoodAnalysis: {
-    screen: FoodAnalysis,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
-  LabAnalysis: {
-    screen: LabAnalysis,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
-  FoodScan: {
-    screen: FoodScan,
-    navigationOptions: {
-      headerShown: false
-    }
-  },
-  LabAttendance: {
-    screen: LabAttendance,
-    navigationOptions: {
-      headerShown: false
-    }
-  }
-});
+  { initialRouteName: "FoodScan" }
+);
 
 const RootNavigator = createSwitchNavigator({
   AuthLoading: {
