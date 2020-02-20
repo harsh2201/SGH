@@ -19,7 +19,7 @@ export default class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visibility: true,
+      visibility: false,
       data: [
         {
           id: 0,
@@ -61,37 +61,58 @@ export default class Menu extends Component {
       .ref("volunteer/" + user.uid)
       .once("value")
       .then(dataSnapshot => {
-        // var access = dataSnapshot.val().Access;
-        var access = "SC";
+        var access = dataSnapshot.val().Access;
         var temp = [];
-        if (access === "SC") {
-          temp.push(this.state.data[1]);
-          this.setState({ data: temp, visibility: false });
-        } else if (access === "LV") {
-          temp.push(this.state.data[0]);
-          this.setState({ data: temp, visibility: false });
-        } else if (access === "FC") {
-          temp.push(this.state.data[2]);
-          temp.push(this.state.data[3]);
-          this.setState({ data: temp, visibility: false });
-        } else if (access === "A") {
-          temp.push(this.state.data[1]);
-          temp.push(this.state.data[3]);
-          this.setState({ data: temp, visibility: false });
-        } else if (access === "FV") {
-          temp.push(this.state.data[2]);
-          this.setState({ data: temp, visibility: false });
-        } else {
-          this.setState({ visibility: false });
-        }
+        access.forEach(access => {
+          if (access === "SC") {
+            if (!temp.includes(this.state.data[1])) {
+              temp.push(this.state.data[1]);
+            }
+          }
+          if (access === "LV") {
+            if (!temp.includes(this.state.data[0])) {
+              temp.push(this.state.data[0]);
+            }
+          }
+          if (access === "FC") {
+            if (!temp.includes(this.state.data[2])) {
+              temp.push(this.state.data[2]);
+            }
+            if (!temp.includes(this.state.data[3])) {
+              temp.push(this.state.data[3]);
+            }
+          }
+          if (access === "A") {
+            if (!temp.includes(this.state.data[1])) {
+              temp.push(this.state.data[1]);
+            }
+            if (!temp.includes(this.state.data[3])) {
+              temp.push(this.state.data[3]);
+            }
+          }
+          if (access === "FV") {
+            if (!temp.includes(this.state.data[2])) {
+              temp.push(this.state.data[2]);
+            }
+          }
+          if (access === null) {
+            this.setState({ data: null });
+          }
+        });
+        this.setState({ data: temp, visibility: false });
       });
   }
   naigationHandler(id) {
     if (id == 0) {
+      this.props.navigation.navigate("LabAttendance");
     } else if (id == 1) {
+      this.props.navigation.navigate("LabAnalysis");
     } else if (id == 2) {
+      this.props.navigation.navigate("FoodScan");
     } else if (id == 3) {
+      this.props.navigation.navigate("FoodAnalysis");
     } else {
+      alert("None found !!")
     }
   }
 

@@ -4,9 +4,9 @@ import { Text, View } from 'react-native'
 export default class LabAttendance extends Component {
     render() {
         return (
-            <View>
-                <Text> textInComponent </Text>
-            </View>
-        )
+          <View style={{ alignItems: "center", justifyContent: "center",flex:1 }}>
+            <Text> LabAttendance </Text>
+          </View>
+        );
     }
 }

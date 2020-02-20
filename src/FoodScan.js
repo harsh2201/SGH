@@ -4,9 +4,11 @@ import { Text, View } from 'react-native'
 export default class FoodScan extends Component {
     render() {
         return (
-            <View>
-                <Text> textInComponent </Text>
-            </View>
-        )
+          <View
+            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          >
+            <Text> FoodScan </Text>
+          </View>
+        );
     }
 }
