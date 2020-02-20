@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 // import { View, StatusBar } from "react-native";
 import Login from "./src/login";
-import Home from "./src/qrScannner";
 import FoodAnalysis from "./src/FoodAnalysis";
 import Main from "./src/Main";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
@@ -23,50 +22,47 @@ export default class App extends Component {
   }
 }
 
-const MainNavigator = createStackNavigator({
-  Main: {
-    screen: Main,
-    navigationOptions: {
-      headerShown: true
+const MainNavigator = createStackNavigator(
+  {
+    Main: {
+      screen: Main,
+      navigationOptions: {
+        headerShown: true
+      }
+    },
+    FoodAnalysis: {
+      screen: FoodAnalysis,
+      navigationOptions: {
+        headerShown: true
+      }
+    },
+    LabAnalysis: {
+      screen: LabAnalysis,
+      navigationOptions: {
+        headerShown: true
+      }
+    },
+    FoodScan: {
+      screen: FoodScan,
+      navigationOptions: {
+        headerShown: true
+      }
+    },
+    LabAttendance: {
+      screen: LabAttendance,
+      navigationOptions: {
+        headerShown: true
+      }
+    },
+    AttendanceQR: {
+      screen: AttendanceQR,
+      navigationOptions: {
+        headerShown: true
+      }
     }
   },
-  FoodAnalysis: {
-    screen: FoodAnalysis,
-    navigationOptions: {
-      headerShown: true
-    }
-  },
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      headerShown: true
-    }
-  },
-  LabAnalysis: {
-    screen: LabAnalysis,
-    navigationOptions: {
-      headerShown: true
-    }
-  },
-  FoodScan: {
-    screen: FoodScan,
-    navigationOptions: {
-      headerShown: true
-    }
-  },
-  LabAttendance: {
-    screen: LabAttendance,
-    navigationOptions: {
-      headerShown: true
-    }
-  },
-  AttendanceQR: {
-    screen: AttendanceQR,
-    navigationOptions: {
-      headerShown: true
-    }
-  }
-});
+  { initialRouteName: "FoodScan" }
+);
 
 const RootNavigator = createSwitchNavigator({
   AuthLoading: {
