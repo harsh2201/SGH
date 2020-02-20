@@ -62,7 +62,7 @@ export default class Menu extends Component {
       .once("value")
       .then(dataSnapshot => {
         // var access = dataSnapshot.val().Access;
-        var access = "";
+        var access = "SC";
         var temp = [];
         if (access === "SC") {
           temp.push(this.state.data[1]);
@@ -71,10 +71,12 @@ export default class Menu extends Component {
           temp.push(this.state.data[0]);
           this.setState({ data: temp, visibility: false });
         } else if (access === "FC") {
-          temp.push(this.state.data[0]);
+          temp.push(this.state.data[2]);
+          temp.push(this.state.data[3]);
           this.setState({ data: temp, visibility: false });
         } else if (access === "A") {
-          temp.push(this.state.data[0]);
+          temp.push(this.state.data[1]);
+          temp.push(this.state.data[3]);
           this.setState({ data: temp, visibility: false });
         } else if (access === "FV") {
           temp.push(this.state.data[2]);

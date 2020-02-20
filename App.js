@@ -10,6 +10,7 @@ import AuthLoading from "./src/authLoading";
 import config from "./src/config";
 import LabAnalysis from "./src/LabAnalysis";
 import FoodScan from "./src/FoodScan";
+import LabAttendance from "./src/LabAttendance";
 
 export default class App extends Component {
   render() {
@@ -45,6 +46,12 @@ const MainNavigator = createStackNavigator({
   },
   FoodScan: {
     screen: FoodScan,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  LabAttendance: {
+    screen: LabAttendance,
     navigationOptions: {
       headerShown: false
     }
