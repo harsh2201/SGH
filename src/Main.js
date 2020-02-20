@@ -95,9 +95,6 @@ export default class Menu extends Component {
               temp.push(this.state.data[2]);
             }
           }
-          if (access === null) {
-            this.setState({ data: null });
-          }
         });
         this.setState({ data: temp, visibility: false });
       });
@@ -112,7 +109,7 @@ export default class Menu extends Component {
     } else if (id == 3) {
       this.props.navigation.navigate("FoodAnalysis");
     } else {
-      alert("None found !!")
+      alert("None found !!");
     }
   }
 
