@@ -62,7 +62,7 @@ export default class Menu extends Component {
       .once("value")
       .then(dataSnapshot => {
         // var access = dataSnapshot.val().Access;
-        var access = "LV";
+        var access = "";
         var temp = [];
         if (access === "SC") {
           temp.push(this.state.data[1]);
@@ -70,8 +70,17 @@ export default class Menu extends Component {
         } else if (access === "LV") {
           temp.push(this.state.data[0]);
           this.setState({ data: temp, visibility: false });
+        } else if (access === "FC") {
+          temp.push(this.state.data[0]);
+          this.setState({ data: temp, visibility: false });
+        } else if (access === "A") {
+          temp.push(this.state.data[0]);
+          this.setState({ data: temp, visibility: false });
+        } else if (access === "FV") {
+          temp.push(this.state.data[2]);
+          this.setState({ data: temp, visibility: false });
         } else {
-          this.setState({ data: null, visibility: false });
+          this.setState({ visibility: false });
         }
       });
   }
@@ -93,7 +102,7 @@ export default class Menu extends Component {
           textStyle={{
             color: "#FFF"
           }}
-          overlayColor="rgba(0, 0, 0, 0.8)"
+          overlayColor="rgba(0, 0, 0, 1)"
         />
         <FlatList
           style={styles.list}
