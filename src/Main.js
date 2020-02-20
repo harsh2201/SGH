@@ -19,7 +19,7 @@ export default class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visibility: false,
+      visibility: true,
       data: [
         {
           id: 0,
@@ -43,6 +43,12 @@ export default class Menu extends Component {
         {
           id: 3,
           title: "Food Analysis",
+          color: "#6A5ACD",
+          image: "https://img.icons8.com/color/70/000000/family.png"
+        },
+        {
+          id: 4,
+          title: "Sign Out",
           color: "#6A5ACD",
           image: "https://img.icons8.com/color/70/000000/family.png"
         }
@@ -96,10 +102,11 @@ export default class Menu extends Component {
             }
           }
         });
+        temp.push(this.state.data[4]);
         this.setState({ data: temp, visibility: false });
       });
   }
-  naigationHandler(id) {
+  async naigationHandler(id) {
     if (id == 0) {
       this.props.navigation.navigate("LabAttendance");
     } else if (id == 1) {
@@ -108,6 +115,8 @@ export default class Menu extends Component {
       this.props.navigation.navigate("FoodScan");
     } else if (id == 3) {
       this.props.navigation.navigate("FoodAnalysis");
+    } else if (id == 4) {
+      await firebase.auth().signOut();
     } else {
       alert("None found !!");
     }
