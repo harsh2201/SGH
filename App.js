@@ -9,6 +9,8 @@ import { Ionicons } from "@expo/vector-icons";
 import AuthLoading from "./src/authLoading";
 import config from "./src/config";
 import LabAnalysis from "./src/LabAnalysis";
+import FoodScan from "./src/FoodScan";
+
 export default class App extends Component {
   render() {
     console.disableYellowBox = true;
@@ -37,6 +39,12 @@ const MainNavigator = createStackNavigator({
   },
   LabAnalysis: {
     screen: LabAnalysis,
+    navigationOptions: {
+      headerShown: false
+    }
+  },
+  FoodScan: {
+    screen: FoodScan,
     navigationOptions: {
       headerShown: false
     }

@@ -14,11 +14,6 @@ import firebase from "./config";
 import Spinner from "react-native-loading-spinner-overlay";
 
 var { height, width } = Dimensions.get("window");
-// lab volun LV - attendance index - 0
-// food volun FV - food scan index - 2
-// food coor FC - food scan and food analysis + switch + past log index - 2, 3
-// studen coor SC - lab analysis switch and past log index - 1
-// admin A - analysis + fc + sc - switch - scan index - 1 without switch,3 without switch
 
 export default class Menu extends Component {
   constructor(props) {
@@ -54,17 +49,22 @@ export default class Menu extends Component {
       ]
     };
   }
-
+  // lab volun LV - attendance index - 0
+  // food volun FV - food scan index - 2
+  // food coor FC - food scan and food analysis + switch + past log index - 2, 3
+  // studen coor SC - lab analysis switch and past log index - 1
+  // admin A - analysis + fc + sc - switch - scan index - 1 without switch,3 without switch
   componentDidMount() {
-    var user = firebase.auth().currentUser;
-    var temp;
-    firebase
-      .database()
-      .ref("volunteer/vuid1/")
-      .once("value")
-      .then(data => {
-        temp = data.val().access;
-      });
+    var type = [];
+    firebase.database().ref("");
+  }
+  naigationHandler(id) {
+    if (id == 0) {
+    } else if (id == 1) {
+    } else if (id == 2) {
+    } else if (id == 3) {
+    } else {
+    }
   }
 
   render() {
@@ -90,7 +90,9 @@ export default class Menu extends Component {
             return (
               <TouchableOpacity
                 style={[styles.card, { backgroundColor: item.color }]}
-                onPress={() => {}}
+                onPress={() => {
+                  this.naigationHandler(item.id);
+                }}
               >
                 <Text style={styles.title}>{item.title}</Text>
               </TouchableOpacity>
