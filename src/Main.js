@@ -106,6 +106,7 @@ export default class Menu extends Component {
         this.setState({ data: temp, visibility: false });
       });
   }
+  
   async naigationHandler(id) {
     if (id == 0) {
       this.props.navigation.navigate("LabAttendance");
