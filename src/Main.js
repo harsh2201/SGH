@@ -10,6 +10,8 @@ import {
   FlatList,
   Dimensions
 } from "react-native";
+import firebase from "./config";
+import Spinner from "react-native-loading-spinner-overlay";
 
 var { height, width } = Dimensions.get("window");
 // lab volun LV - attendance index - 0
@@ -22,16 +24,17 @@ export default class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      visibility: true,
       data: [
         {
-          id: 1,
+          id: 0,
           title: "Lab Attendance",
           color: "#FF4500",
           image: "https://img.icons8.com/color/70/000000/name.png"
         },
 
         {
-          id: 3,
+          id: 1,
           title: "Lab Attendance Analysis",
           color: "#4682B4",
           image: "https://img.icons8.com/color/70/000000/two-hearts.png"
@@ -43,18 +46,38 @@ export default class Menu extends Component {
           image: "https://img.icons8.com/office/70/000000/home-page.png"
         },
         {
-          id: 4,
+          id: 3,
           title: "Food Analysis",
           color: "#6A5ACD",
           image: "https://img.icons8.com/color/70/000000/family.png"
-        },
+        }
       ]
     };
+  }
+
+  componentDidMount() {
+    var user = firebase.auth().currentUser;
+    var temp;
+    firebase
+      .database()
+      .ref("volunteer/vuid1/")
+      .once("value")
+      .then(data => {
+        temp = data.val().access;
+      });
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Spinner
+          visible={this.state.visibility}
+          textContent={"Loading..."}
+          textStyle={{
+            color: "#FFF"
+          }}
+          overlayColor="rgba(0, 0, 0, 0.8)"
+        />
         <FlatList
           style={styles.list}
           contentContainerStyle={styles.listContainer}

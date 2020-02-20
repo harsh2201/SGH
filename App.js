@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import Login from "./src/login";
 import Home from "./src/qrScannner";
-import Analytics from "./src/Analytics";
+import FoodAnalysis from "./src/FoodAnalysis";
 import Main from "./src/Main";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { Ionicons } from "@expo/vector-icons";
 import AuthLoading from "./src/authLoading";
 import config from "./src/config";
-import Labinfo from "./src/Labinfo";
+import LabAnalysis from "./src/LabAnalysis";
 export default class App extends Component {
   render() {
     console.disableYellowBox = true;
@@ -23,8 +23,8 @@ const MainNavigator = createStackNavigator({
       headerShown: false
     }
   },
-  Analytics: {
-    screen: Analytics,
+  FoodAnalysis: {
+    screen: FoodAnalysis,
     navigationOptions: {
       headerShown: false
     }
@@ -35,8 +35,8 @@ const MainNavigator = createStackNavigator({
       headerShown: false
     }
   },
-  Labinfo: {
-    screen: Labinfo,
+  LabAnalysis: {
+    screen: LabAnalysis,
     navigationOptions: {
       headerShown: false
     }
