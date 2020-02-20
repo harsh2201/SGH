@@ -55,8 +55,25 @@ export default class Menu extends Component {
   // studen coor SC - lab analysis switch and past log index - 1
   // admin A - analysis + fc + sc - switch - scan index - 1 without switch,3 without switch
   componentDidMount() {
-    var type = [];
-    firebase.database().ref("");
+    var user = firebase.auth().currentUser;
+    firebase
+      .database()
+      .ref("volunteer/" + user.uid)
+      .once("value")
+      .then(dataSnapshot => {
+        // var access = dataSnapshot.val().Access;
+        var access = "LV";
+        var temp = [];
+        if (access === "SC") {
+          temp.push(this.state.data[1]);
+          this.setState({ data: temp, visibility: false });
+        } else if (access === "LV") {
+          temp.push(this.state.data[0]);
+          this.setState({ data: temp, visibility: false });
+        } else {
+          this.setState({ data: null, visibility: false });
+        }
+      });
   }
   naigationHandler(id) {
     if (id == 0) {

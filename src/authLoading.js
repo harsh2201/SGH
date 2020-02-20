@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import firebase from "./config";
+import Spinner from "react-native-loading-spinner-overlay";
 
 class authLoading extends Component {
   componentDidMount() {
@@ -15,7 +16,14 @@ class authLoading extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <Spinner
+          visible={true}
+          textContent={"Loading..."}
+          textStyle={{
+            color: "#FFF"
+          }}
+          overlayColor="rgba(0, 0, 0, 0.8)"
+        />
       </View>
     );
   }
