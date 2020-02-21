@@ -38,8 +38,8 @@ class AttendanceQR extends Component {
 
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     var letters = /^[0-9a-zA-Z]+$/;
-    if (data.match(letters) !== true) {
-      alert("Invalid QR Code!");
+    if (data.match(letters) === null) {
+      alert("Invalid QR Code!" + " \nCode: " + data);
       this.setState({ scanned: true, isloading: false });
       return;
     }
@@ -84,19 +84,33 @@ class AttendanceQR extends Component {
             .then(snap => {
               if (snap.val()["taken"] === true) {
                 alert("Already scanned once");
+                // console.log("not scanned");
                 this.setState({ isloading: false });
                 return;
               }
-              console.log("not scanned");
+              var today = new Date();
+              var date =
+                today.getFullYear() +
+                "-" +
+                (today.getMonth() + 1) +
+                "-" +
+                today.getDate();
+              var time =
+                today.getHours() +
+                ":" +
+                today.getMinutes() +
+                ":" +
+                today.getSeconds();
+              var dateTime = date + " " + time;
               volLabRef
-                .child(uuid + "/taken")
-                .set(true)
+                .child(uuid + "/")
+                .update({ taken: true, time: dateTime })
                 .then(() => console.log("Attendance Taken"));
               log
                 .child("lab/" + this.state.volLab + "/")
                 .child(uuid)
                 .child(Date.now())
-                .set(currUser)
+                .update({ volunteer: currUser, time: dateTime })
                 .then(() => {
                   console.log(Date.now());
                   Toast.show("Successfully scanned");

@@ -8,6 +8,7 @@
  *  */
 
 import React, { Component } from "react";
+
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
@@ -33,8 +34,8 @@ class FoodScan extends Component {
 
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     var letters = /^[0-9a-zA-Z]+$/;
-    if (data.match(letters) !== true) {
-      alert("Invalid QR Code!");
+    if (data.match(letters) === null) {
+      alert("Invalid QR Code!" + " \nCode: " + data);
       this.setState({ scanned: true, isloading: false });
       return;
     }

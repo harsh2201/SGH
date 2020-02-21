@@ -8,10 +8,12 @@ import {
   Alert,
   ScrollView,
   FlatList,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from "react-native";
 import { Button } from "react-native-paper";
 import { Linking } from "expo";
+import { Avatar, PButton, Card, Title, Paragraph } from "react-native-paper";
 
 import firebase from "./config";
 
@@ -21,7 +23,8 @@ export default class Calls extends Component {
     this.state = {
       participants: [],
       labFlag: false,
-      volLab: ""
+      volLab: "",
+      isLoading: true
     };
   }
 
@@ -31,43 +34,38 @@ export default class Calls extends Component {
     var uid = user.uid;
     let volLab = "";
     let partis = [];
-
     let labFlag;
+    let tempPartis;
+
+    //Fetching Volunteer's Lab No
+    volLab = await db
+      .ref("volunteer/" + uid + "/Lab/")
+      .once("value")
+      .then(snapshot => {
+        return snapshot.val();
+      });
+    this.setState({ volLab: volLab });
+
+    // Fetching Volunteer's Lab participants
+    await db.ref("lab/" + volLab + "/").on("value", snapshot => {
+      tempPartis = snapshot.val();
+      partis = [];
+      for (let item in tempPartis) {
+        partis.push(tempPartis[item]);
+      }
+      this.setState({ participants: partis });
+    });
+
+    // Checking if the attendance is ON or OFF
     await db.ref("lab/flag/").on("value", async snapshot => {
-      // console.log(snapshot.val());
       labFlag = snapshot.val();
       this.setState({ labFlag: labFlag });
-      if (labFlag === true) {
-        volLab = await db
-          .ref("volunteer/" + uid + "/Lab/")
-          .once("value")
-          .then(snapshot => {
-            // console.log(snapshot.val());
-            return snapshot.val();
-          });
-        this.setState({ volLab: volLab });
-        let tempPartis;
-        await db.ref("lab/" + volLab + "/").on("value", snapshot => {
-          // console.log(snapshot.val());
-          tempPartis = snapshot.val();
-          partis = [];
-          for (let item in tempPartis) {
-            partis.push(tempPartis[item]);
-          }
-          this.setState({ participants: partis });
-        });
-        console.log(this.state.participants);
-      }
     });
-    // console.log(labFlag);
+    this.setState({ isLoading: false });
   }
 
   _handleCall = Mobile => {
-    var str = Mobile;
-    // var phoneString = str.replace(/-/g, "");
-    var phoneString = str;
-    str.console.log(phoneString);
-    const url = `tel:${phoneString}`;
+    const url = `tel:${Mobile}`;
     Linking.canOpenURL(url).then(supported => {
       if (supported) {
         return Linking.openURL(url).catch(() => null);
@@ -82,7 +80,6 @@ export default class Calls extends Component {
       icon = "https://img.icons8.com/plasticine/400/000000/checked-2.png";
     }
     return (
-      // <TouchableOpacity activeOpacity={1}>
       <View style={styles.row}>
         <Image source={{ uri: icon }} style={styles.pic} />
         <View>
@@ -90,18 +87,7 @@ export default class Calls extends Component {
             <Text style={styles.nameTxt}>{item.Name}</Text>
           </View>
           <View style={styles.end}>
-            {/* <Image
-              style={[
-                styles.icon,
-                { marginLeft: 15, marginRight: 5, width: 14, height: 14 }
-              ]}
-              source={{
-                uri: "https://img.icons8.com/small/14/000000/double-tick.png"
-              }}
-            /> */}
-            <Text style={styles.time}>
-              {item.date} {item.time}
-            </Text>
+            {item.taken ? <Text style={styles.time}>{item.time}</Text> : null}
           </View>
         </View>
         <TouchableOpacity
@@ -115,13 +101,19 @@ export default class Calls extends Component {
           />
         </TouchableOpacity>
       </View>
-      // </TouchableOpacity>
     );
   };
 
   render() {
     return (
       <View style={{ flex: 1 }}>
+        {this.state.isLoading ? (
+          <ActivityIndicator
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            size="large"
+            color="#0000ff"
+          />
+        ) : null}
         {this.state.labFlag ? (
           <Button
             icon="qrcode"
@@ -195,7 +187,8 @@ const styles = StyleSheet.create({
   time: {
     fontWeight: "400",
     color: "#666",
-    fontSize: 12
+    fontSize: 12,
+    marginLeft: 15
   },
   icon: {
     height: 40,
