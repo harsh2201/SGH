@@ -14,7 +14,7 @@ import firebase from "./config";
 import Toast from "react-native-simple-toast";
 const database = firebase.database();
 
-class FoodScan extends Component {
+class AttendanceQR extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -132,7 +132,7 @@ class FoodScan extends Component {
     );
   }
 }
-export default FoodScan;
+export default AttendanceQR;
 
 const styles = StyleSheet.create({
   container: {
