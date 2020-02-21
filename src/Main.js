@@ -49,7 +49,7 @@ export default class Menu extends Component {
         {
           id: 4,
           title: "Sign Out",
-          color: "#6A5ACD",
+          color: "red",
           image: "https://img.icons8.com/color/70/000000/family.png"
         }
       ]
@@ -67,7 +67,8 @@ export default class Menu extends Component {
       .ref("volunteer/" + user.uid)
       .once("value")
       .then(dataSnapshot => {
-        var access = dataSnapshot.val().Access;
+        // var access = dataSnapshot.val().Access;
+        access = ["SC", "LV", "FC"];
         var temp = [];
         access.forEach(access => {
           if (access === "SC") {
@@ -106,7 +107,7 @@ export default class Menu extends Component {
         this.setState({ data: temp, visibility: false });
       });
   }
-  
+
   async naigationHandler(id) {
     if (id == 0) {
       this.props.navigation.navigate("LabAttendance");
