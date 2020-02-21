@@ -1,7 +1,17 @@
+/**
+ *
+ *
+ * Code Sanitization left ie to sanitizze urls or any other special chars
+ *
+ *
+ *
+ *  */
+
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
+import Toast from "react-native-simple-toast";
 const database = firebase.database();
 
 class AttendanceQR extends Component {
@@ -10,7 +20,8 @@ class AttendanceQR extends Component {
     this.state = {
       hasPermission: null,
       scanned: false,
-      isValid: false
+      isValid: false,
+      isloading: false
     };
   }
   async componentDidMount() {
@@ -18,53 +29,72 @@ class AttendanceQR extends Component {
     this.setState({ hasPermission: status === "granted" });
   }
   handleBarCodeScanned = ({ type, data }) => {
-    this.setState({ scanned: true });
-    //   this.checkUser(data)
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    this.setState({ scanned: true, isloading: true });
+
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    this.checkUser(data);
   };
-  checkUser = () => {
+
+  checkUser = uuid => {
     this.setState({ isValid: false });
     var currUser = firebase.auth().currentUser.uid;
-    var uuid = "ecdae3e8187d19a6f7bc9c55d091dd35";
+    console.log(uuid);
+    // var uuid = "00a24bb6def3ccea853a1d55399fc311";
     var food = database.ref("/food");
     var log = database.ref("/log");
     var user = database.ref("/user");
-    user
-      .child(uuid)
-      .once("value")
-      .then(snap => {
-        if (snap.exists()) {
-          this.setState({ isValid: true });
-          console.log("User exists");
-        }
+    food.child("flag").once("value", snap => {
+      console.log(snap);
 
-        if (!this.state.isValid) {
-          alert("No User found");
-          return;
-        }
-        food
-          .child(uuid)
-          .once("value")
-          .then(snap => {
-            if (snap.exists()) {
-              alert("Alerdy Scanned once");
-              return;
-            }
-            console.log("not scanned");
-            food
-              .child(uuid)
-              .set(currUser)
-              .then(() => console.log("added in food"));
-            log
-              .child("Food")
-              .child(uuid)
-              .child(Date.now())
-              .set(currUser)
-              .then(() => {
-                console.log(Date.now());
-              });
-          });
-      });
+      if (snap.val() !== true) {
+        alert("Scanning has not started.Please Contact your Coordinator");
+        this.setState({ isloading: false });
+        return;
+      }
+
+      user
+        .child(`${uuid}`)
+        .once("value")
+        .then(snap => {
+          if (snap.exists()) {
+            this.setState({ isValid: true });
+            console.log("User exists");
+          }
+
+          if (!this.state.isValid) {
+            alert("No User found");
+            this.setState({ isloading: false });
+
+            return;
+          }
+          food
+            .child(uuid)
+            .once("value")
+            .then(snap => {
+              if (snap.exists()) {
+                alert("Alerdy Scanned once");
+                this.setState({ isloading: false });
+
+                return;
+              }
+              console.log("not scanned");
+              food
+                .child(uuid)
+                .set(currUser)
+                .then(() => console.log("added in food"));
+              log
+                .child("Food")
+                .child(uuid)
+                .child(Date.now())
+                .set(currUser)
+                .then(() => {
+                  console.log(Date.now());
+                  Toast.show("Successfully scanned");
+                  this.setState({ isloading: false });
+                });
+            });
+        });
+    });
   };
 
   render() {
@@ -82,19 +112,22 @@ class AttendanceQR extends Component {
           justifyContent: "flex-end"
         }}
       >
-        {/* <BarCodeScanner
+        <BarCodeScanner
           onBarCodeScanned={
-            this.state.scanned ? undefined : this.handleBarCodeScanned
+            this.state.scanned
+              ? undefined
+              : this.handleBarCodeScanned.bind(this)
           }
           style={StyleSheet.absoluteFillObject}
         />
         {this.state.scanned && (
           <Button
             title={"Tap to Scan Again"}
+            disabled={this.state.isloading}
             onPress={() => this.setState({ scanned: false })}
           />
-        )} */}
-        <Button title={"Start scan"} onPress={this.checkUser} />
+        )}
+        {/* <Button title={"call"} onPress={this.checkUser} /> */}
       </View>
     );
   }
