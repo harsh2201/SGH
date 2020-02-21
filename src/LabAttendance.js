@@ -113,34 +113,32 @@ export default class Calls extends Component {
     let volLab = "";
     let partis = [];
 
-    labFlag = await db
-      .ref("lab/flag/")
-      .once("value")
-      .then(snapshot => {
-        // console.log(snapshot.val());
-        return snapshot.val();
-      });
-    // console.log(labFlag);
-    if (labFlag === true) {
-      volLab = await db
-        .ref("volunteer/" + uid + "/Lab/")
-        .once("value")
-        .then(snapshot => {
+    let labFlag;
+    await db.ref("lab/flag/").on("value", async snapshot => {
+      // console.log(snapshot.val());
+      labFlag = snapshot.val();
+      if (labFlag === true) {
+        volLab = await db
+          .ref("volunteer/" + uid + "/Lab/")
+          .once("value")
+          .then(snapshot => {
+            // console.log(snapshot.val());
+            return snapshot.val();
+          });
+        let tempPartis;
+        await db.ref("lab/" + volLab + "/").on("value", snapshot => {
           // console.log(snapshot.val());
-          return snapshot.val();
+          tempPartis = snapshot.val();
+          partis = [];
+          for (let item in tempPartis) {
+            partis.push(tempPartis[item]);
+          }
+          this.setState({ participants: partis });
         });
-      let tempPartis;
-      await db.ref("lab/" + volLab + "/").on("value", snapshot => {
-        // console.log(snapshot.val());
-        tempPartis = snapshot.val();
-        partis = [];
-        for (let item in tempPartis) {
-          partis.push(tempPartis[item]);
-        }
-        this.setState({ participants: partis });
-      });
-      console.log(this.state.participants);
-    }
+        console.log(this.state.participants);
+      }
+    });
+    // console.log(labFlag);
   }
 
   renderItem = ({ item }) => {
@@ -192,7 +190,7 @@ export default class Calls extends Component {
             marginVertical: 10
             // backgroundColor: "#FF6501c5"
           }}
-          onPress={() => this.props.navigation.navigate("AttendanceQR")}
+          onPress={() => this.props.navigation.navigate("AttendanceQR", {})}
         >
           Scan for attendance
         </Button>
