@@ -95,6 +95,7 @@ export default class LoginView extends Component {
           onPress={() => {
             try {
               firebase.auth().sendPasswordResetEmail(this.state.email);
+              alert("Email has been sent !!");
             } catch (e) {
               alert(e);
             }
