@@ -4,9 +4,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
-  Alert,
-  ScrollView,
   FlatList,
   Dimensions
 } from "react-native";
@@ -62,50 +59,54 @@ export default class Menu extends Component {
   // admin A - analysis + fc + sc - switch - scan index - 1 without switch,3 without switch
   componentDidMount() {
     var user = firebase.auth().currentUser;
-    firebase
-      .database()
-      .ref("volunteer/" + user.uid)
-      .once("value")
-      .then(dataSnapshot => {
-        // var access = dataSnapshot.val().Access;
-        access = ["SC", "LV", "FC"];
-        var temp = [];
-        access.forEach(access => {
-          if (access === "SC") {
-            if (!temp.includes(this.state.data[1])) {
-              temp.push(this.state.data[1]);
+    try {
+      firebase
+        .database()
+        .ref("volunteer/" + user.uid)
+        .once("value")
+        .then(dataSnapshot => {
+          // var access = dataSnapshot.val().Access;
+          access = ["SC", "LV", "FC"];
+          var temp = [];
+          access.forEach(access => {
+            if (access === "SC") {
+              if (!temp.includes(this.state.data[1])) {
+                temp.push(this.state.data[1]);
+              }
             }
-          }
-          if (access === "LV") {
-            if (!temp.includes(this.state.data[0])) {
-              temp.push(this.state.data[0]);
+            if (access === "LV") {
+              if (!temp.includes(this.state.data[0])) {
+                temp.push(this.state.data[0]);
+              }
             }
-          }
-          if (access === "FC") {
-            if (!temp.includes(this.state.data[2])) {
-              temp.push(this.state.data[2]);
+            if (access === "FC") {
+              if (!temp.includes(this.state.data[2])) {
+                temp.push(this.state.data[2]);
+              }
+              if (!temp.includes(this.state.data[3])) {
+                temp.push(this.state.data[3]);
+              }
             }
-            if (!temp.includes(this.state.data[3])) {
-              temp.push(this.state.data[3]);
+            if (access === "A") {
+              if (!temp.includes(this.state.data[1])) {
+                temp.push(this.state.data[1]);
+              }
+              if (!temp.includes(this.state.data[3])) {
+                temp.push(this.state.data[3]);
+              }
             }
-          }
-          if (access === "A") {
-            if (!temp.includes(this.state.data[1])) {
-              temp.push(this.state.data[1]);
+            if (access === "FV") {
+              if (!temp.includes(this.state.data[2])) {
+                temp.push(this.state.data[2]);
+              }
             }
-            if (!temp.includes(this.state.data[3])) {
-              temp.push(this.state.data[3]);
-            }
-          }
-          if (access === "FV") {
-            if (!temp.includes(this.state.data[2])) {
-              temp.push(this.state.data[2]);
-            }
-          }
+          });
+          temp.push(this.state.data[4]);
+          this.setState({ data: temp, visibility: false });
         });
-        temp.push(this.state.data[4]);
-        this.setState({ data: temp, visibility: false });
-      });
+    } catch (e) {
+      alert(e);
+    }
   }
 
   async naigationHandler(id) {
