@@ -1,12 +1,3 @@
-/**
- *
- *
- * Code Sanitization left ie to sanitizze urls or any other special chars
- *
- *
- *
- *  */
-
 import React, { Component } from "react";
 
 import { Text, View, StyleSheet, Button } from "react-native";

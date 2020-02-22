@@ -16,7 +16,7 @@ import AttendanceQR from "./src/AttendanceQR";
 
 export default class App extends Component {
   render() {
-    console.disableYellowBox = true;
+    // console.disableYellowBox = true;
     // console.log(Constants.statusBarHeight);
     return <AppContainer />;
   }
@@ -61,7 +61,7 @@ const MainNavigator = createStackNavigator(
       }
     }
   }
-  // { initialRouteName: "FoodScan" }
+  // { initialRouteName: "FoodAnalysis" }
 );
 
 const RootNavigator = createSwitchNavigator({

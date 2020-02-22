@@ -140,11 +140,12 @@ export default class Menu extends Component {
           data={this.state.data}
           horizontal={false}
           keyExtractor={item => {
-            return item.id;
+            return String(item.id);
           }}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
+                key={String(item.id)}
                 style={[styles.card, { backgroundColor: item.color }]}
                 onPress={() => {
                   this.naigationHandler(item.id);
