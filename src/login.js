@@ -32,7 +32,7 @@ export default class LoginView extends Component {
         .auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .catch(e => {
-          alert("Something went wrong");
+          alert(e);
         });
       this.setState({ visibility: false });
     } catch (e) {
