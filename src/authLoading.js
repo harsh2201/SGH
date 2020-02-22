@@ -18,11 +18,11 @@ class authLoading extends Component {
       <View style={styles.container}>
         <Spinner
           visible={true}
-          textContent={"Loading..."}
+          textContent={"Checking if logged in..."}
           textStyle={{
             color: "#FFF"
           }}
-          overlayColor="rgba(0, 0, 0, 0.8)"
+          overlayColor="rgba(0, 0, 0, 1)"
         />
       </View>
     );
