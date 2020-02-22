@@ -8,6 +8,7 @@
  *  */
 
 import React, { Component } from "react";
+
 import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
@@ -32,6 +33,12 @@ class FoodScan extends Component {
     this.setState({ scanned: true, isloading: true });
 
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    var letters = /^[0-9a-zA-Z]+$/;
+    if (data.match(letters) === null) {
+      alert("Invalid QR Code!" + " \nCode: " + data);
+      this.setState({ scanned: true, isloading: false });
+      return;
+    }
     this.checkUser(data);
   };
 
@@ -72,7 +79,7 @@ class FoodScan extends Component {
             .once("value")
             .then(snap => {
               if (snap.exists()) {
-                alert("Alerdy Scanned once");
+                alert("Already scanned once");
                 this.setState({ isloading: false });
 
                 return;

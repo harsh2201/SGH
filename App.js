@@ -61,6 +61,10 @@ const MainNavigator = createStackNavigator(
       }
     }
   }
+<<<<<<< HEAD
+=======
+  // { initialRouteName: "FoodScan" }
+>>>>>>> a1b0ff94138b2597f13d207d5e19506c0e7fc66b
 );
 
 const RootNavigator = createSwitchNavigator({

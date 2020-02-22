@@ -167,23 +167,24 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   list: {
-    //paddingHorizontal: 5,
+    paddingHorizontal: 10,
     backgroundColor: "#E6E6E6"
   },
 
   /******** card **************/
   card: {
-    width: width,
+    width: "100%",
     height: 150,
     flexDirection: "row",
     padding: 20,
-
+    marginVertical: 10,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    borderRadius: 10
   },
   cardImage: {
-    height: 70,
-    width: 70
+    // height: 70,
+    // width: 70
   },
   title: {
     fontSize: 28,
