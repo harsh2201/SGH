@@ -21,19 +21,23 @@ export default class LoginView extends Component {
   }
 
   _signIn = async () => {
-    this.setState({ visibility: true });
-    if (this.state.email === "" || this.state.password === "") {
-      alert("Email or password is empty !!");
+    try {
+      this.setState({ visibility: true });
+      if (this.state.email === "" || this.state.password === "") {
+        alert("Email or password is empty !!");
+        this.setState({ visibility: false });
+        return;
+      }
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .catch(e => {
+          alert("Something went wrong");
+        });
       this.setState({ visibility: false });
-      return;
+    } catch (e) {
+      alert(e);
     }
-    await firebase
-      .auth()
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .catch(e => {
-        alert("Something went wrong");
-      });
-    this.setState({ visibility: false });
   };
 
   render() {
@@ -89,7 +93,11 @@ export default class LoginView extends Component {
         <TouchableHighlight
           style={styles.buttonContainer}
           onPress={() => {
-            firebase.auth().sendPasswordResetEmail(this.state.email);
+            try {
+              firebase.auth().sendPasswordResetEmail(this.state.email);
+            } catch (e) {
+              alert(e);
+            }
           }}
         >
           <Text style={styles.loginText}>Forgot your password?</Text>
