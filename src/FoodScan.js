@@ -34,15 +34,15 @@ class FoodScan extends Component {
   };
 
   checkUser = uuid => {
+    console.log("gfh");
     this.setState({ isValid: false });
     var currUser = firebase.auth().currentUser.uid;
-    console.log(uuid);
     // var uuid = "00a24bb6def3ccea853a1d55399fc311";
     var food = database.ref("/food");
     var log = database.ref("/log");
     var user = database.ref("/user");
     food.child("flag").once("value", snap => {
-      console.log(snap);
+      console.log("flag:" + snap.val());
 
       if (snap.val() !== true) {
         alert("Scanning has not started.Please Contact your Coordinator");
@@ -61,36 +61,73 @@ class FoodScan extends Component {
 
           if (!this.state.isValid) {
             alert("No User found");
+            console.log("No User found");
             this.setState({ isloading: false });
-
             return;
           }
-          food
-            .child(uuid)
-            .once("value")
-            .then(snap => {
-              if (snap.exists()) {
+
+          food.child(uuid).transaction(
+            snap => {
+              console.log(typeof snap, typeof null);
+              console.log("Tstart", snap);
+              if (snap === null) {
+                console.log("not scanned");
+                return currUser;
+              } else {
                 alert("Already scanned once");
                 this.setState({ isloading: false });
-
                 return;
               }
-              console.log("not scanned");
-              food
-                .child(uuid)
-                .set(currUser)
-                .then(() => console.log("added in food"));
-              log
-                .child("Food")
-                .child(uuid)
-                .child(Date.now())
-                .set(currUser)
-                .then(() => {
-                  console.log(Date.now());
-                  Toast.show("Successfully scanned");
-                  this.setState({ isloading: false });
-                });
-            });
+            },
+            function(error, committed, snapshot) {
+              if (error) {
+                console.log("Transaction failed abnormally!", error);
+              } else if (!committed) {
+                console.log(
+                  "We aborted the transaction (because ada already exists)."
+                );
+              } else {
+                log
+                  .child("Food")
+                  .child(uuid)
+                  .child(Date.now())
+                  .set(currUser)
+                  .then(() => {
+                    console.log(Date.now());
+                    Toast.show("Successfully scanned");
+                    this.setState({ isloading: false });
+                  });
+              }
+              console.log("Ada's data: ", snapshot.val());
+            }
+          );
+
+          // food
+          //   .child(uuid)
+          //   .once("value")
+          //   .then(snap => {
+          //     if (snap.exists()) {
+          //       alert("Already scanned once");
+          //       this.setState({ isloading: false });
+
+          //       return;
+          //     }
+          //     console.log("not scanned");
+          //     food
+          //       .child(uuid)
+          //       .set(currUser)
+          //       .then(() => console.log("added in food"));
+          //     log
+          //       .child("Food")
+          //       .child(uuid)
+          //       .child(Date.now())
+          //       .set(currUser)
+          //       .then(() => {
+          //         console.log(Date.now());
+          //         Toast.show("Successfully scanned");
+          //         this.setState({ isloading: false });
+          //       });
+          //   });
         });
     });
   };
