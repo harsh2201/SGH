@@ -23,11 +23,16 @@ const chartConfig = {
 
 class FoodChart extends Component {
   componentDidMount() {
-    db.ref("log/Food/").on("value", snap => {
-      this.setState({ snap: snap.val() }, this.analysis.bind(this));
+    db.ref("/Dates").once("value", snapshot => {
+      db.ref("log/Food/").on("value", snap => {
+        this.setState({ snap: snap.val() }, () =>
+          this.analysis(snapshot.val())
+        );
+      });
     });
   }
-  analysis = () => {
+  analysis = snap => {
+    // console.log(snap);a
     const values = Object.values(this.state.snap);
     var breakfast = [];
     var lunch = [];
@@ -35,33 +40,42 @@ class FoodChart extends Component {
     var dinner = [];
     var breakfast1 = [];
     var lunch1 = [];
-    var breakfastTime = [8, 10];
-    var lunchTime = [12, 15];
-    var highTeaTime = [5, 6];
-    var dinnerTime = [7, 10];
-    var breakfast1Time = [8, 10];
-    var lunch1Time = [12, 15];
+    // var breakfastTime = [8, 10];
+    // var lunchTime = [12, 15];
+    // var highTeaTime = [17, 18];
+    // var dinnerTime = [19, 22];
+    // var breakfast1Time = [8, 10];
+    // var lunch1Time = [12, 15];
+    // var day = [27, 28];
+    var breakfastTime = snap.breakfastTime;
+    var lunchTime = snap.lunchTime;
+    var highTeaTime = snap.highTeaTime;
+    var dinnerTime = snap.dinnerTime;
+    var breakfast1Time = snap.breakfast1Time;
+    var lunch1Time = snap.lunch1Time;
+    var day = snap.day;
+    console.log(breakfastTime, lunchTime);
 
     for (var i in values) {
       for (var j in Object.keys(values[i])) {
         var d = parseInt(Object.keys(values[i])[j]);
         d = d * 1000;
         var date = new Date(d);
-        if (date.getDate() == 27) {
-          // console.log(date.getHours());
+        if (date.getDate() === day[0]) {
           var dhours = date.getHours();
-          console.log(date.getDate(), dhours);
+          // console.log(date.getDate(), dhours);
 
-          if (dhours > breakfastTime[0] && dhours < breakfastTime[1]) {
+          if (dhours >= breakfastTime[0] && dhours <= breakfastTime[1]) {
             breakfast.push(date);
-          } else if (dhours > lunchTime[0] && dhours < lunchTime[1]) {
+          } else if (dhours >= lunchTime[0] && dhours <= lunchTime[1]) {
             lunch.push(date);
-          } else if (dhours > highTeaTime[0] && dhours < highTeaTime[1]) {
+          } else if (dhours >= highTeaTime[0] && dhours <= highTeaTime[1]) {
             highTea.push(date);
-          } else if (dhours > dinnerTime[0] && dhours < dinnerTime[1]) {
+          } else if (dhours >= dinnerTime[0] && dhours <= dinnerTime[1]) {
             dinner.push(date);
           }
-        } else if (date.getDate() == 28) {
+        } else if (date.getDate() === day[1]) {
+          // console.log(28, date.getHours());
           var dhours = date.getHours();
           if (dhours > breakfast1Time[0] && dhours < breakfast1Time[1]) {
             breakfast1.push(date);
@@ -69,10 +83,8 @@ class FoodChart extends Component {
             lunch1.push(date);
           }
         }
-        // console.log(date.getDate());
       }
     }
-    // this.setState(this.state.data.datasets[0][])
     console.log(
       breakfast.length,
       lunch.length,
@@ -81,6 +93,31 @@ class FoodChart extends Component {
       breakfast1.length,
       lunch1.length
     );
+    this.setState({
+      data: {
+        labels: [
+          "Breakfast",
+          "Lunch",
+          "High Tea",
+          "Dinner",
+          "Breakfast",
+          "lunch"
+        ],
+        datasets: [
+          {
+            data: [
+              breakfast.length,
+              lunch.length,
+              highTea.length,
+              dinner.length,
+              breakfast1.length,
+              lunch1.length
+            ],
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`
+          }
+        ]
+      }
+    });
   };
   constructor() {
     super();
