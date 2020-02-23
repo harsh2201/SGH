@@ -1,12 +1,21 @@
-import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import React, { Component } from "react";
+import { View, Text, StyleSheet } from "react-native";
 
-export default class FoodAnalysis extends Component {
+class FoodAnalysis extends Component {
   render() {
     return (
-      <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-        <Text> FoodAnalysis </Text>
+      <View style={styles.container}>
+        <Text>FoodAnalysis</Text>
       </View>
     );
   }
 }
+export default FoodAnalysis;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});

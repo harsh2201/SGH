@@ -80,26 +80,32 @@ export default class Calls extends Component {
       icon = "https://img.icons8.com/plasticine/400/000000/checked-2.png";
     }
     return (
-      <View style={styles.row}>
-        <Image source={{ uri: icon }} style={styles.pic} />
-        <View>
-          <View style={styles.nameContainer}>
-            <Text style={styles.nameTxt}>{item.Name}</Text>
+      <View>
+        {item.Name ? (
+          <View style={styles.row}>
+            <Image source={{ uri: icon }} style={styles.pic} />
+            <View>
+              <View style={styles.nameContainer}>
+                <Text style={styles.nameTxt}>{item.Name}</Text>
+              </View>
+              <View style={styles.end}>
+                {item.taken ? (
+                  <Text style={styles.time}>{"Taken at: " + item.time}</Text>
+                ) : null}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this._handleCall(item.Mobile);
+              }}
+            >
+              <Image
+                style={[styles.icon, { marginRight: 0 }]}
+                source={{ uri: callIcon }}
+              />
+            </TouchableOpacity>
           </View>
-          <View style={styles.end}>
-            {item.taken ? <Text style={styles.time}>{item.time}</Text> : null}
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            this._handleCall(item.Mobile);
-          }}
-        >
-          <Image
-            style={[styles.icon, { marginRight: 0 }]}
-            source={{ uri: callIcon }}
-          />
-        </TouchableOpacity>
+        ) : null}
       </View>
     );
   };
@@ -155,8 +161,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 10,
     // marginHorizontal: 10,
+    marginVertical: 4,
     paddingVertical: 20,
     justifyContent: "space-evenly"
+    // borderRadius: 15
     // alignContent: "space-between"
   },
   pic: {

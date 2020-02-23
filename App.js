@@ -24,7 +24,7 @@ export default class App extends Component {
 
 const MainNavigator = createStackNavigator(
   {
-    Main: {
+    Menu: {
       screen: Main,
       navigationOptions: {
         headerShown: true

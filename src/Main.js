@@ -16,6 +16,9 @@ import Spinner from "react-native-loading-spinner-overlay";
 var { height, width } = Dimensions.get("window");
 
 export default class Menu extends Component {
+  static navigationOptions = {
+    title: "Menu   "
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -67,7 +70,8 @@ export default class Menu extends Component {
       .ref("volunteer/" + user.uid)
       .once("value")
       .then(dataSnapshot => {
-        var access = dataSnapshot.val().Access;
+        // var access = dataSnapshot.val().Access;
+        var access = ["FC", "FV"];
         var temp = [];
         access.forEach(access => {
           if (access === "SC") {
@@ -162,8 +166,8 @@ export default class Menu extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 20
+    flex: 1
+    // marginTop: 20
   },
   list: {
     paddingHorizontal: 10,
@@ -176,7 +180,7 @@ const styles = StyleSheet.create({
     height: 150,
     flexDirection: "row",
     padding: 20,
-    marginVertical: 10,
+    marginVertical: 7,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10
