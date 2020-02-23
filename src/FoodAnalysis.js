@@ -8,7 +8,7 @@ import {
   Dimensions
 } from "react-native";
 import Toast from "react-native-simple-toast";
-
+import FoodChart from "./component/FoodChart";
 import { Switch } from "react-native-paper";
 import firebase from "./config";
 const db = firebase.database();
@@ -33,7 +33,6 @@ export default class FoodAnalysis extends Component {
         this.setState({ foodCount: this.state.foodCount + 1 });
       });
       db.ref("/food/").on("value", snap => {
-        console.log(snap.numChildren());
         this.setState({ foodCount: snap.numChildren() - 1 });
       });
     } catch (error) {
@@ -48,7 +47,12 @@ export default class FoodAnalysis extends Component {
     await db
       .ref("/food/flag")
       .set(!this.state.value)
-      .then(() => Toast.show("Update Success"))
+      .then(() => {
+        if (!this.state.value) {
+          db.ref("/food/user").set({});
+        }
+        Toast.show("Update Success");
+      })
       .catch(error => console.log(error));
   };
   render() {
@@ -66,9 +70,10 @@ export default class FoodAnalysis extends Component {
           onChange={this.changeSwitchStatus}
         ></Switch>
         <View style={styles.foodContainer}>
-          <Text style={{ fontSize: 25 }}>Food Count </Text>
+          <Text style={{ fontSize: 25 }}>Current Food Count </Text>
           <Text style={{ fontSize: 25 }}>{this.state.foodCount} </Text>
         </View>
+        <FoodChart></FoodChart>
       </View>
     );
   }
@@ -82,88 +87,13 @@ const styles = StyleSheet.create({
   },
   formContent: {
     // flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
     marginTop: 45
   },
-  inputContainer: {
-    borderBottomColor: "#F5FCFF",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 30,
-    borderBottomWidth: 1,
-    height: 45,
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    margin: 10
-  },
+
   foodContainer: {
     // backgroundColor: "red",
-    flex: 1,
     alignItems: "center",
     width: width,
     paddingTop: height / 25
-  },
-  icon: {
-    width: 30,
-    height: 30
-  },
-  iconBtnSearch: {
-    alignSelf: "center"
-  },
-  inputs: {
-    height: 45,
-    marginLeft: 16,
-    borderBottomColor: "#FFFFFF",
-    flex: 1
-  },
-  inputIcon: {
-    marginLeft: 15,
-    justifyContent: "center"
-  },
-  notificationList: {
-    marginTop: 20,
-    padding: 10
-  },
-  card: {
-    height: null,
-    width: Dimensions.get("window").width,
-    justifyContent: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    marginTop: 5,
-    backgroundColor: "#FFFFFF",
-    flexDirection: "column",
-    borderTopWidth: 40,
-    marginBottom: 20
-  },
-  cardContent: {
-    flexDirection: "row",
-    marginLeft: 10
-  },
-  imageContent: {
-    marginTop: -40
-  },
-  tagsContent: {
-    marginTop: 10,
-    flexWrap: "wrap"
-  },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginLeft: 10,
-    alignSelf: "center"
-  },
-  btnColor: {
-    padding: 10,
-    borderRadius: 40,
-    marginHorizontal: 3,
-    backgroundColor: "#eee",
-    marginTop: 5
   }
 });

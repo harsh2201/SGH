@@ -51,7 +51,7 @@ class FoodScan extends Component {
       }
 
       user
-        .child(`${uuid}`)
+        .child(uuid)
         .once("value")
         .then(snap => {
           if (snap.exists()) {
@@ -66,41 +66,44 @@ class FoodScan extends Component {
             return;
           }
 
-          food.child(uuid).transaction(
-            snap => {
-              console.log(typeof snap, typeof null);
-              console.log("Tstart", snap);
-              if (snap === null) {
-                console.log("not scanned");
-                return currUser;
-              } else {
-                alert("Already scanned once");
-                this.setState({ isloading: false });
-                return;
-              }
-            },
-            function(error, committed, snapshot) {
-              if (error) {
-                console.log("Transaction failed abnormally!", error);
-              } else if (!committed) {
-                console.log(
-                  "We aborted the transaction (because ada already exists)."
-                );
-              } else {
-                log
-                  .child("Food")
-                  .child(uuid)
-                  .child(Date.now())
-                  .set(currUser)
-                  .then(() => {
-                    console.log(Date.now());
-                    Toast.show("Successfully scanned");
-                    this.setState({ isloading: false });
-                  });
-              }
-              console.log("Ada's data: ", snapshot.val());
-            }
-          );
+          food
+            .child("user")
+            .child(uuid)
+            .transaction(
+              snap => {
+                // console.log(typeof snap, typeof null);
+                // console.log("Tstart", snap);
+                if (snap === null) {
+                  // console.log("not scanned");
+                  return currUser;
+                } else {
+                  alert("Already scanned once");
+                  this.setState({ isloading: false });
+                  return;
+                }
+              },
+              function(error, committed, snapshot) {
+                if (error) {
+                  console.log("Transaction failed abnormally!", error);
+                } else if (!committed) {
+                  console.log(
+                    "We aborted the transaction (because ada already exists)."
+                  );
+                } else {
+                  log
+                    .child("Food")
+                    .child(uuid)
+                    .child(Date.now())
+                    .set(currUser)
+                    .then(() => {
+                      console.log(Date.now());
+                      Toast.show("Successfully scanned");
+                      this.setState({ isloading: false });
+                    });
+                }
+                console.log("Ada's data: ", snapshot.val());
+              }.bind(this)
+            );
 
           // food
           //   .child(uuid)

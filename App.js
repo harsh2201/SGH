@@ -60,8 +60,8 @@ const MainNavigator = createStackNavigator(
         headerShown: true
       }
     }
-  }
-  // { initialRouteName: "FoodAnalysis" }
+  },
+  { initialRouteName: "FoodAnalysis" }
 );
 
 const RootNavigator = createSwitchNavigator({

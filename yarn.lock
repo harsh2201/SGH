@@ -4219,6 +4219,10 @@ path-type@^2.0.0:
   dependencies:
     pify "^2.0.0"
 
+paths-js@^0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/paths-js/-/paths-js-0.4.10.tgz#a3575f409b4a36f8aa795ba4d051989021be58c7"
+
 pify@^2.0.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
@@ -4262,6 +4266,10 @@ plugin-error@^0.1.2:
     arr-diff "^1.0.1"
     arr-union "^2.0.1"
     extend-shallow "^1.1.2"
+
+point-in-polygon@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/point-in-polygon/-/point-in-polygon-1.0.1.tgz#d59b64e8fee41c49458aac82b56718c5957b2af7"
 
 posix-character-classes@^0.1.0:
   version "0.1.1"
@@ -4412,6 +4420,14 @@ react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-i
 react-native-animate-loading-button@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-native-animate-loading-button/-/react-native-animate-loading-button-1.0.3.tgz#6425215f12aca464b8057ac62d9ea4a728375e98"
+
+react-native-chart-kit@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-chart-kit/-/react-native-chart-kit-5.1.0.tgz#d1bda2140010c9ecd397265ea34fa48832756fd2"
+  dependencies:
+    lodash "^4.17.13"
+    paths-js "^0.4.10"
+    point-in-polygon "^1.0.1"
 
 react-native-circular-progress@^1.3.6:
   version "1.3.6"
