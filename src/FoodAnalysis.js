@@ -1,65 +1,99 @@
-import React from "react";
-import { Grid, LineChart, XAxis, YAxis } from "react-native-svg-charts";
-import { View } from "react-native";
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Dimensions
+} from "react-native";
+import Toast from "react-native-simple-toast";
+import FoodChart from "./component/FoodChart";
+import { Switch } from "react-native-paper";
+import firebase from "./config";
+const db = firebase.database();
+const { width, height } = Dimensions.get("window");
+export default class FoodAnalysis extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: false,
+      isLoding: true,
+      foodCount: 0
+    };
+  }
+  componentDidMount() {
+    this.setState({ isLoding: true });
+    try {
+      db.ref("/food/flag").on("value", snap => {
+        this.setState({ value: snap.val(), isLoding: false });
+      });
+      db.ref("/food").on("child_added", snap => {
+        console.log(snap);
+        this.setState({ foodCount: this.state.foodCount + 1 });
+      });
+      db.ref("/food/").on("value", snap => {
+        this.setState({ foodCount: snap.numChildren() - 1 });
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  changeSwitchStatus = async () => {
+    this.setState({ isLoding: true });
 
-class AxesExample extends React.PureComponent {
+    this.setState({ value: !this.state.value });
+
+    await db
+      .ref("/food/flag")
+      .set(!this.state.value)
+      .then(() => {
+        if (!this.state.value) {
+          db.ref("/food/user").set({});
+        }
+        Toast.show("Update Success");
+      })
+      .catch(error => console.log(error));
+  };
   render() {
-    const data = [
-      50,
-      10,
-      40,
-      95,
-      -4,
-      -24,
-      85,
-      91,
-      35,
-      53,
-      -53,
-      24,
-      50,
-      -20,
-      -80
-    ];
-
-    const axesSvg = { fontSize: 10, fill: "grey" };
-    const verticalContentInset = { top: 10, bottom: 10 };
-    const xAxisHeight = 30;
-
-    // Layout of an x-axis together with a y-axis is a problem that stems from flexbox.
-    // All react-native-svg-charts components support full flexbox and therefore all
-    // layout problems should be approached with the mindset "how would I layout regular Views with flex in this way".
-    // In order for us to align the axes correctly we must know the height of the x-axis or the width of the x-axis
-    // and then displace the other axis with just as many pixels. Simple but manual.
-
+    const a = 1.5;
     return (
-      <View style={{ height: 300, paddingTop: 20, flexDirection: "row" }}>
-        <YAxis
-          data={data}
-          style={{ marginBottom: xAxisHeight }}
-          contentInset={verticalContentInset}
-          svg={axesSvg}
-        />
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <LineChart
-            style={{ flex: 1 }}
-            data={data}
-            contentInset={verticalContentInset}
-            svg={{ stroke: "rgb(134, 65, 244)" }}
-          >
-            <Grid />
-          </LineChart>
-          <XAxis
-            style={{ marginHorizontal: -10, height: xAxisHeight }}
-            data={data}
-            formatLabel={(value, index) => index}
-            contentInset={{ left: 10, right: 10 }}
-            svg={axesSvg}
-          />
+      <View style={styles.container}>
+        <View style={styles.formContent}></View>
+        <Switch
+          style={{
+            transform: [{ scaleX: a }, { scaleY: a }],
+            alignSelf: "flex-end",
+            marginRight: width / 25
+          }}
+          value={this.state.value}
+          onChange={this.changeSwitchStatus}
+        ></Switch>
+        <View style={styles.foodContainer}>
+          <Text style={{ fontSize: 25 }}>Current Food Count </Text>
+          <Text style={{ fontSize: 25 }}>{this.state.foodCount} </Text>
         </View>
+        <FoodChart></FoodChart>
       </View>
     );
   }
 }
 
-export default AxesExample;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#EBEBEB",
+    alignItems: "center"
+  },
+  formContent: {
+    // flexDirection: "row",
+    marginTop: 45
+  },
+
+  foodContainer: {
+    // backgroundColor: "red",
+    alignItems: "center",
+    width: width,
+    paddingTop: height / 25
+  }
+});
