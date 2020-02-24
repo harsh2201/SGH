@@ -60,8 +60,8 @@ const MainNavigator = createStackNavigator(
         headerShown: true
       }
     }
-  },
-  { initialRouteName: "LabAnalysis" }
+  }
+  // { initialRouteName: "LabAnalysis" }
 );
 
 const RootNavigator = createSwitchNavigator({
