@@ -68,8 +68,8 @@ export default class Menu extends Component {
         .ref("volunteer/" + user.uid)
         .once("value")
         .then(dataSnapshot => {
-          // var access = dataSnapshot.val().Access;
-          access = ["SC", "LV", "FC"];
+          var access = dataSnapshot.val().Access;
+          // access = ["SC", "LV", "FC"];
           var temp = [];
           access.forEach(access => {
             if (access === "SC") {
