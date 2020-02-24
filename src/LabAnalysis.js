@@ -100,7 +100,7 @@ export default class Users extends Component {
           for (part in jsonData[lab]) {
             if (part !== undefined) {
               // console.log(jsonData[lab][part]);
-              jsonData[lab][part]["taken"] = true;
+              jsonData[lab][part]["taken"] = false;
               // db.ref("lab/" + lab + "/" + part + "/").update({
               //   taken: false
               // });
