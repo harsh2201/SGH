@@ -24,7 +24,7 @@ export default class App extends Component {
 
 const MainNavigator = createStackNavigator(
   {
-    Main: {
+    Menu: {
       screen: Main,
       navigationOptions: {
         headerShown: true
@@ -60,8 +60,8 @@ const MainNavigator = createStackNavigator(
         headerShown: true
       }
     }
-  },
-  { initialRouteName: "FoodAnalysis" }
+  }
+  // { initialRouteName: "FoodAnalysis" }
 );
 
 const RootNavigator = createSwitchNavigator({

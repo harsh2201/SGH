@@ -14,6 +14,7 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
 import Toast from "react-native-simple-toast";
 const database = firebase.database();
+import Spinner from "react-native-loading-spinner-overlay";
 
 class AttendanceQR extends Component {
   constructor(props) {
@@ -73,7 +74,7 @@ class AttendanceQR extends Component {
           }
 
           if (!this.state.isValid) {
-            alert("Participant not in this lab");
+            alert("Participant not in this lab" + uuid);
             this.setState({ isloading: false });
 
             return;
@@ -101,11 +102,18 @@ class AttendanceQR extends Component {
                 today.getMinutes() +
                 ":" +
                 today.getSeconds();
-              var dateTime = date + " " + time;
+              var dateTime = time + " " + date;
               volLabRef
                 .child(uuid + "/")
                 .update({ taken: true, time: dateTime })
-                .then(() => console.log("Attendance Taken"));
+                .then(async () => {
+                  console.log("Attendance Taken");
+                  //   await volLabRef
+                  //     .child("count/")
+                  //     .transaction(function(currentCount) {
+                  //       return currentCount + 1;
+                  //     });
+                });
               log
                 .child("lab/" + this.state.volLab + "/")
                 .child(uuid)
@@ -136,6 +144,14 @@ class AttendanceQR extends Component {
           justifyContent: "flex-end"
         }}
       >
+        <Spinner
+          visible={this.state.isloading}
+          textContent={"Loading..."}
+          textStyle={{
+            color: "#FFF"
+          }}
+          overlayColor="rgba(0, 0, 0, 0.8)"
+        />
         <BarCodeScanner
           onBarCodeScanned={
             this.state.scanned
