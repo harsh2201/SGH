@@ -74,7 +74,7 @@ class AttendanceQR extends Component {
           }
 
           if (!this.state.isValid) {
-            alert("Participant not in this lab");
+            alert("Participant not in this lab" + uuid);
             this.setState({ isloading: false });
 
             return;
