@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, Dimensions, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
-import Toast from "react-native-simple-toast";
 import Spinner from "react-native-loading-spinner-overlay";
 const database = firebase.database();
 
@@ -99,7 +98,8 @@ class FoodScan extends Component {
                     .set(currUser)
                     .then(() => {
                       console.log(Date.now());
-                      Toast.show("Successfully scanned");
+                      // Toast.show("Successfully scanned");
+                      alert("Successfully scanned");
                       this.setState({ isloading: false });
                     });
                 }

@@ -92,32 +92,41 @@ export default class Users extends Component {
     let db = firebase.database();
     this.setState({ isLoading: true });
     if (this.state.switch === false) {
-      await db.ref("lab/").once("value", async resetSnap => {
-        let jsonData = resetSnap.val();
-        delete jsonData["flag"];
+      await db
+        .ref("lab/")
+        .once("value", async resetSnap => {
+          let jsonData = resetSnap.val();
+          delete jsonData["flag"];
 
-        for (lab in jsonData) {
-          for (part in jsonData[lab]) {
-            if (part !== undefined) {
-              // console.log(jsonData[lab][part]);
-              jsonData[lab][part]["taken"] = false;
-              // db.ref("lab/" + lab + "/" + part + "/").update({
-              //   taken: false
-              // });
-              // setTimeout(() => {
-              //   let db = firebase.database();
+          for (lab in jsonData) {
+            for (part in jsonData[lab]) {
+              if (part !== undefined) {
+                // console.log(jsonData[lab][part]);
+                jsonData[lab][part]["taken"] = false;
+                // db.ref("lab/" + lab + "/" + part + "/").update({
+                //   taken: false
+                // });
+                // setTimeout(() => {
+                //   let db = firebase.database();
 
-              // }, 5);
+                // }, 5);
+              }
+              // console.log(part);
             }
-            // console.log(part);
           }
-        }
-        console.log(jsonData);
-        db.ref("lab/").update(jsonData);
-      });
+          console.log(jsonData);
+          db.ref("lab/").update(jsonData);
+        })
+        .catch(e => {
+          alert(e);
+        });
       this.setState({ isLoading: false });
     }
-    await db.ref("lab/flag/").set(!this.state.switch);
+    try {
+      await db.ref("lab/flag/").set(!this.state.switch);
+    } catch (e) {
+      alert(e);
+    }
   };
 
   render() {

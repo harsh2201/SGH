@@ -7,7 +7,7 @@ import {
   FlatList,
   Dimensions
 } from "react-native";
-import Toast from "react-native-simple-toast";
+// import Toast from "react-native-simple-toast";
 import FoodChart from "./component/FoodChart";
 import { Switch } from "react-native-paper";
 import firebase from "./config";
@@ -51,7 +51,8 @@ export default class FoodAnalysis extends Component {
         if (!this.state.value) {
           db.ref("/food/user").set({});
         }
-        Toast.show("Update Success");
+        // Toast.show("Update Success");
+        alert("Update Success");
       })
       .catch(error => console.log(error));
   };

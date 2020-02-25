@@ -12,7 +12,6 @@ import { Text, View, StyleSheet, Button } from "react-native";
 import { Linking } from "expo";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
-import Toast from "react-native-simple-toast";
 const database = firebase.database();
 import Spinner from "react-native-loading-spinner-overlay";
 
@@ -64,68 +63,74 @@ class AttendanceQR extends Component {
         return;
       }
 
-      volLabRef
-        .child(uuid)
-        .once("value")
-        .then(snap => {
-          if (snap.exists()) {
-            this.setState({ isValid: true });
-            console.log("Participant exists");
-          }
+      try {
+        volLabRef
+          .child(uuid)
+          .once("value")
+          .then(snap => {
+            if (snap.exists()) {
+              this.setState({ isValid: true });
+              console.log("Participant exists");
+            }
 
-          if (!this.state.isValid) {
-            alert("Participant not in this lab" + uuid);
-            this.setState({ isloading: false });
+            if (!this.state.isValid) {
+              alert("Participant not in this lab" + uuid);
+              this.setState({ isloading: false });
 
-            return;
-          }
-          volLabRef
-            .child(uuid)
-            .once("value")
-            .then(snap => {
-              if (snap.val()["taken"] === true) {
-                alert("Already scanned once");
-                // console.log("not scanned");
-                this.setState({ isloading: false });
-                return;
-              }
-              var today = new Date();
-              var date =
-                today.getFullYear() +
-                "-" +
-                (today.getMonth() + 1) +
-                "-" +
-                today.getDate();
-              var time =
-                today.getHours() +
-                ":" +
-                today.getMinutes() +
-                ":" +
-                today.getSeconds();
-              var dateTime = time + " " + date;
-              volLabRef
-                .child(uuid + "/")
-                .update({ taken: true, time: dateTime })
-                .then(async () => {
-                  console.log("Attendance Taken");
-                  //   await volLabRef
-                  //     .child("count/")
-                  //     .transaction(function(currentCount) {
-                  //       return currentCount + 1;
-                  //     });
-                });
-              log
-                .child("lab/" + this.state.volLab + "/")
-                .child(uuid)
-                .child(Date.now())
-                .update({ volunteer: currUser, time: dateTime })
-                .then(() => {
-                  console.log(Date.now());
-                  Toast.show("Successfully scanned");
+              return;
+            }
+            volLabRef
+              .child(uuid)
+              .once("value")
+              .then(snap => {
+                if (snap.val()["taken"] === true) {
+                  alert("Already scanned once");
+                  // console.log("not scanned");
                   this.setState({ isloading: false });
-                });
-            });
-        });
+                  return;
+                }
+                var today = new Date();
+                var date =
+                  today.getFullYear() +
+                  "-" +
+                  (today.getMonth() + 1) +
+                  "-" +
+                  today.getDate();
+                var time =
+                  today.getHours() +
+                  ":" +
+                  today.getMinutes() +
+                  ":" +
+                  today.getSeconds();
+                var dateTime = time + " " + date;
+                volLabRef
+                  .child(uuid + "/")
+                  .update({ taken: true, time: dateTime })
+                  .then(async () => {
+                    console.log("Attendance Taken");
+                    //   await volLabRef
+                    //     .child("count/")
+                    //     .transaction(function(currentCount) {
+                    //       return currentCount + 1;
+                    //     });
+                  });
+                log
+                  .child("lab/" + this.state.volLab + "/")
+                  .child(uuid)
+                  .child(Date.now())
+                  .update({ volunteer: currUser, time: dateTime })
+                  .then(() => {
+                    console.log(Date.now());
+                    // Toast.show("Successfully scanned"  );
+                    alert("Successfully scanned");
+                    this.setState({ isloading: false });
+                  });
+              });
+          })
+          .catch(e => alert(e));
+      } catch (e) {
+        alert(e);
+      }
     });
   };
 

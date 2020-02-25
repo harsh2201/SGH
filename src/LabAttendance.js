@@ -48,6 +48,9 @@ export default class Calls extends Component {
       .once("value")
       .then(snapshot => {
         return snapshot.val();
+      })
+      .catch(e => {
+        alert(e);
       });
     this.setState({ volLab: volLab });
 

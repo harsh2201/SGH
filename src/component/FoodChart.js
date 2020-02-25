@@ -23,13 +23,17 @@ const chartConfig = {
 
 class FoodChart extends Component {
   componentDidMount() {
-    db.ref("/Dates").once("value", snapshot => {
-      db.ref("log/Food/").on("value", snap => {
-        this.setState({ snap: snap.val() }, () =>
-          this.analysis(snapshot.val())
-        );
+    try {
+      db.ref("/Dates").once("value", snapshot => {
+        db.ref("log/Food/").on("value", snap => {
+          this.setState({ snap: snap.val() }, () =>
+            this.analysis(snapshot.val())
+          );
+        });
       });
-    });
+    } catch (e) {
+      alert(e);
+    }
   }
   analysis = snap => {
     // console.log(snap);a

@@ -3,7 +3,11 @@ import React, { Component } from "react";
 import Login from "./src/login";
 import FoodAnalysis from "./src/FoodAnalysis";
 import Main from "./src/Main";
-import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  SafeAreaView
+} from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 // import { Ionicons } from "@expo/vector-icons";
 import AuthLoading from "./src/authLoading";
@@ -13,7 +17,6 @@ import FoodScan from "./src/FoodScan";
 import LabAttendance from "./src/LabAttendance";
 import AttendanceQR from "./src/AttendanceQR";
 // import { Constants } from "expo";
-
 export default class App extends Component {
   render() {
     // console.disableYellowBox = true;
