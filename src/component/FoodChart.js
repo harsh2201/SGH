@@ -78,9 +78,9 @@ class FoodChart extends Component {
         } else if (date.getDate() === day[1]) {
           // console.log(28, date.getHours());
           var dhours = date.getHours();
-          if (dhours > breakfast1Time[0] && dhours < breakfast1Time[1]) {
+          if (dhours >= breakfast1Time[0] && dhours <= breakfast1Time[1]) {
             breakfast1.push(date);
-          } else if (dhours > lunch1Time[0] && dhours < lunch1Time[1]) {
+          } else if (dhours >= lunch1Time[0] && dhours <= lunch1Time[1]) {
             lunch1.push(date);
           }
         }
