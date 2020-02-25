@@ -5,8 +5,12 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  Dimensions
+  Dimensions,
+  ScrollView,
+  ActivityIndicator
 } from "react-native";
+import firebase from "./config";
+import Spinner from "react-native-loading-spinner-overlay";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Switch } from "react-native-paper";
 
@@ -14,73 +18,183 @@ export default class Users extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSwitchOn: false,
-      data: [
-        {
-          id: 1,
-          color: "#FF4500",
-          icon: "https://bootdey.com/img/Content/avatar/avatar1.png",
-          name: "User 1",
-          tags: ["tag 1", "tag 2", "tag 3", "Mobile dev", "RN", "Bootdey"]
-        },
-        {
-          id: 2,
-          color: "#87CEEB",
-          icon: "https://bootdey.com/img/Content/avatar/avatar2.png",
-          name: "User 2",
-          tags: ["tag 1", "tag 2", "tag 3", "Dey-Dey", "Developer"]
-        },
-        {
-          id: 3,
-          color: "#4682B4",
-          icon: "https://bootdey.com/img/Content/avatar/avatar3.png",
-          name: "User 3",
-          tags: ["tag 1", "tag 2", "tag 3"]
-        }
-      ]
+      isLoading: true,
+      labAttendance: [],
+      labObj: {},
+      switch: false
     };
   }
+
+  async componentDidMount() {
+    db = firebase.database();
+
+    // db.ref("lab/flag/").on("value", labSnap => {
+    //   let flag = labSnap.val();
+    //   this.setState({ switch: flag });
+    // });
+    labRef = await db.ref("lab/").on("value", snap => {
+      let data = {};
+      let labAttendance = [];
+      let jsonData = snap.val();
+      // this.setState({  });
+
+      this.setState({
+        labObj: jsonData,
+        labAttendance: [],
+        switch: jsonData["flag"]
+      });
+      delete jsonData["flag"];
+
+      for (lab in this.state.labObj) {
+        if (lab !== "lab" || lab !== "flag") {
+          data[lab] = {};
+          data[lab]["present"] = 0;
+          data[lab]["total"] = 0;
+          for (part in this.state.labObj[lab]) {
+            if (this.state.labObj[lab][part]["taken"] === true) {
+              data[lab]["present"] += 1;
+            }
+            data[lab]["total"] += 1;
+          }
+        }
+      }
+      for (x in data) {
+        if (x !== "flag" || x !== "lab") {
+          data[x]["lab"] = x;
+          labAttendance.push(data[x]);
+        }
+      }
+      this.setState({
+        labAttendance: labAttendance,
+        isLoading: false
+      });
+    });
+  }
+
+  renderItem = item => {
+    return (
+      <View key={String(item.lab)} style={[styles.card]}>
+        <Text style={styles.title}>{item.lab}</Text>
+        <AnimatedCircularProgress
+          size={30}
+          width={3}
+          fill={item.present / item.total}
+          tintColor="#00e0ff"
+          backgroundColor="#3d5875"
+        >
+          {fill => <Text>{item.present}</Text>}
+        </AnimatedCircularProgress>
+      </View>
+    );
+  };
+
+  resetAttendance = async () => {
+    let db = firebase.database();
+    this.setState({ isLoading: true });
+    if (this.state.switch === false) {
+      await db
+        .ref("lab/")
+        .once("value", async resetSnap => {
+          let jsonData = resetSnap.val();
+          delete jsonData["flag"];
+
+          for (lab in jsonData) {
+            for (part in jsonData[lab]) {
+              if (part !== undefined) {
+                // console.log(jsonData[lab][part]);
+                jsonData[lab][part]["taken"] = false;
+                // db.ref("lab/" + lab + "/" + part + "/").update({
+                //   taken: false
+                // });
+                // setTimeout(() => {
+                //   let db = firebase.database();
+
+                // }, 5);
+              }
+              // console.log(part);
+            }
+          }
+          console.log(jsonData);
+          db.ref("lab/").update(jsonData);
+        })
+        .catch(e => {
+          alert(e);
+        });
+      this.setState({ isLoading: false });
+    }
+    try {
+      await db.ref("lab/flag/").set(!this.state.switch);
+    } catch (e) {
+      alert(e);
+    }
+  };
+
   render() {
     const a = 2;
     return (
       <View style={styles.container}>
-        <View style={styles.formContent}></View>
-        <Switch
-          style={{ transform: [{ scaleX: a }, { scaleY: a }] }}
-          value={this.state.isSwitchOn}
-          onValueChange={() => {
-            var temp = this.state.isSwitchOn;
-            this.setState({ isSwitchOn: !temp });
-          }}
-        ></Switch>
-        <FlatList
-          style={styles.notificationList}
-          data={this.state.data}
-          keyExtractor={item => {
-            return item.id;
-          }}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                style={[styles.card, { borderColor: item.color }]}
-              >
-                <View style={styles.cardContent}>
-                  <AnimatedCircularProgress
-                    size={100}
-                    width={8}
-                    fill={39}
-                    tintColor="#00e0ff"
-                    backgroundColor="#3d5875"
-                  >
-                    {fill => <Text>{fill}/1000</Text>}
-                  </AnimatedCircularProgress>
-                  <Text style={styles.name}>{item.name}</Text>
-                </View>
-                <View style={[styles.cardContent, styles.tagsContent]}></View>
-              </TouchableOpacity>
-            );
-          }}
-        />
+        {this.state.isLoading ? (
+          <ActivityIndicator
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+            size="large"
+            color="#0000ff"
+          />
+        ) : (
+          <View>
+            <View
+              style={{
+                justifyContent: "center",
+                alignSelf: "center",
+                marginTop: 20,
+                flexDirection: "row"
+              }}
+            >
+              <Text style={{ marginRight: 3 }}>Turn OFF Attendance</Text>
+              <Switch
+                value={this.state.switch}
+                onValueChange={() => {
+                  this.resetAttendance();
+                  // this.setState({ isSwitchOn: !false });
+                }}
+              />
+            </View>
+
+            <FlatList
+              style={styles.list}
+              contentContainerStyle={styles.listContainer}
+              data={this.state.labAttendance}
+              horizontal={false}
+              keyExtractor={item => {
+                return String(item.lab);
+              }}
+              renderItem={({ item }) => {
+                return (
+                  <View key={String(item.lab)} style={[styles.card]}>
+                    <Text style={styles.title}>{item.lab}</Text>
+                    <AnimatedCircularProgress
+                      size={70}
+                      width={10}
+                      // fill={100}
+                      fill={(100 * item.present) / item.total}
+                      tintColor="#00e0ff"
+                      backgroundColor="#3d5875"
+                    >
+                      {fill => (
+                        <Text>
+                          {item.present} / {item.total}
+                        </Text>
+                      )}
+                    </AnimatedCircularProgress>
+                  </View>
+                );
+              }}
+            />
+          </View>
+        )}
       </View>
     );
   }
@@ -89,86 +203,53 @@ export default class Users extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EBEBEB",
-    alignItems: "center"
+    backgroundColor: "#E6E6E6"
+    // marginTop: 20
   },
-  formContent: {
-    // flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 45
+  list: {
+    paddingHorizontal: 10,
+    backgroundColor: "#E6E6E6"
   },
-  inputContainer: {
-    borderBottomColor: "#F5FCFF",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 30,
-    borderBottomWidth: 1,
-    height: 45,
+
+  /******** card **************/
+  card: {
+    width: "100%",
+    height: 150,
     flexDirection: "row",
+    padding: 20,
+    marginVertical: 7,
+    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5
+  },
+  cardImage: {
+    // height: 70,
+    // width: 70
+  },
+  title: {
+    fontSize: 28,
     flex: 1,
-    margin: 10
+    color: "#1d1d1d",
+    fontWeight: "bold",
+    marginLeft: 40
+  },
+  subTitle: {
+    fontSize: 12,
+    flex: 1,
+    color: "#FFFFFF"
   },
   icon: {
-    width: 30,
-    height: 30
-  },
-  iconBtnSearch: {
-    alignSelf: "center"
-  },
-  inputs: {
-    height: 45,
-    marginLeft: 16,
-    borderBottomColor: "#FFFFFF",
-    flex: 1
-  },
-  inputIcon: {
-    marginLeft: 15,
-    justifyContent: "center"
-  },
-  notificationList: {
-    marginTop: 20,
-    padding: 10
-  },
-  card: {
-    height: null,
-    width: Dimensions.get("window").width,
-    justifyContent: "center",
-    paddingTop: 10,
-    paddingBottom: 10,
-    marginTop: 5,
-    backgroundColor: "#FFFFFF",
-    flexDirection: "column",
-    borderTopWidth: 40,
-    marginBottom: 20
-  },
-  cardContent: {
-    flexDirection: "row",
-    marginLeft: 10
-  },
-  imageContent: {
-    marginTop: -40
-  },
-  tagsContent: {
-    marginTop: 10,
-    flexWrap: "wrap"
-  },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginLeft: 10,
-    alignSelf: "center"
-  },
-  btnColor: {
-    padding: 10,
-    borderRadius: 40,
-    marginHorizontal: 3,
-    backgroundColor: "#eee",
-    marginTop: 5
+    height: 20,
+    width: 20
   }
 });

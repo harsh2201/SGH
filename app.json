@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Blank Template",
-    "slug": "SSIPnew",
+    "name": "SSIP CHARUSAT",
+    "slug": "SSIPCHARUSAT",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -17,6 +17,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "android": {
+      "package": "charusat.ssip.gov"
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -25,6 +28,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Dimensions, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
-import Toast from "react-native-simple-toast";
+import Spinner from "react-native-loading-spinner-overlay";
+import Toast from "react-native-whc-toast";
 const database = firebase.database();
 
 class FoodScan extends Component {
@@ -19,6 +20,7 @@ class FoodScan extends Component {
   async componentDidMount() {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     this.setState({ hasPermission: status === "granted" });
+    // console.log("Called");
   }
   handleBarCodeScanned = ({ type, data }) => {
     this.setState({ scanned: true, isloading: true });
@@ -96,7 +98,9 @@ class FoodScan extends Component {
                     .set(currUser)
                     .then(() => {
                       console.log(Date.now());
-                      Toast.show("Successfully scanned");
+                      // Toast.show("Successfully scanned");
+                      this.refs.toast.show("Successfully Scanned !!");
+                      alert("Successfully scanned");
                       this.setState({ isloading: false });
                     });
                 }
@@ -122,6 +126,14 @@ class FoodScan extends Component {
           justifyContent: "flex-end"
         }}
       >
+        <Spinner
+          visible={this.state.isloading}
+          textContent={"Loading..."}
+          textStyle={{
+            color: "#FFF"
+          }}
+          overlayColor="rgba(0, 0, 0, 0.8)"
+        />
         <BarCodeScanner
           onBarCodeScanned={
             this.state.scanned
@@ -134,10 +146,16 @@ class FoodScan extends Component {
           <Button
             title={"Tap to Scan Again"}
             disabled={this.state.isloading}
+            style={{
+              backgroundColor: "#6A5ACD",
+              height: Dimensions.get("window").height / 10,
+              color: "#fff"
+            }}
             onPress={() => this.setState({ scanned: false })}
           />
         )}
         {/* <Button title={"call"} onPress={this.checkUser} /> */}
+        <Toast ref="toast" />
       </View>
     );
   }

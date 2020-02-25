@@ -18,6 +18,11 @@ import { Avatar, PButton, Card, Title, Paragraph } from "react-native-paper";
 import firebase from "./config";
 
 export default class Calls extends Component {
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     title: navigation.getParam("otherParam", "A Nested Details Screen" + this.state.volLab)
+  //   };
+  // };
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +48,9 @@ export default class Calls extends Component {
       .once("value")
       .then(snapshot => {
         return snapshot.val();
+      })
+      .catch(e => {
+        alert(e);
       });
     this.setState({ volLab: volLab });
 
@@ -80,26 +88,35 @@ export default class Calls extends Component {
       icon = "https://img.icons8.com/plasticine/400/000000/checked-2.png";
     }
     return (
-      <View style={styles.row}>
-        <Image source={{ uri: icon }} style={styles.pic} />
-        <View>
-          <View style={styles.nameContainer}>
-            <Text style={styles.nameTxt}>{item.Name}</Text>
+      <View>
+        {item.Name ? (
+          <View style={styles.row}>
+            <Image source={{ uri: icon }} style={styles.pic} />
+            <View>
+              <View style={styles.nameContainer}>
+                <Text style={styles.nameTxt}>
+                  {item.Name} - {item.Type.replace("Team", "")} -{" "}
+                  {item["Team ID"]}
+                </Text>
+              </View>
+              <View style={styles.end}>
+                {item.taken ? (
+                  <Text style={styles.time}>{"Taken at: " + item.time}</Text>
+                ) : null}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                this._handleCall(item.Mobile);
+              }}
+            >
+              <Image
+                style={[styles.icon, { marginRight: 0 }]}
+                source={{ uri: callIcon }}
+              />
+            </TouchableOpacity>
           </View>
-          <View style={styles.end}>
-            {item.taken ? <Text style={styles.time}>{item.time}</Text> : null}
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            this._handleCall(item.Mobile);
-          }}
-        >
-          <Image
-            style={[styles.icon, { marginRight: 0 }]}
-            source={{ uri: callIcon }}
-          />
-        </TouchableOpacity>
+        ) : null}
       </View>
     );
   };
@@ -109,7 +126,11 @@ export default class Calls extends Component {
       <View style={{ flex: 1 }}>
         {this.state.isLoading ? (
           <ActivityIndicator
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
             size="large"
             color="#0000ff"
           />
@@ -155,8 +176,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 10,
     // marginHorizontal: 10,
+    marginVertical: 4,
     paddingVertical: 20,
     justifyContent: "space-evenly"
+    // borderRadius: 15
     // alignContent: "space-between"
   },
   pic: {
