@@ -18,6 +18,11 @@ import { Avatar, PButton, Card, Title, Paragraph } from "react-native-paper";
 import firebase from "./config";
 
 export default class Calls extends Component {
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     title: navigation.getParam("otherParam", "A Nested Details Screen" + this.state.volLab)
+  //   };
+  // };
   constructor(props) {
     super(props);
     this.state = {
@@ -86,7 +91,10 @@ export default class Calls extends Component {
             <Image source={{ uri: icon }} style={styles.pic} />
             <View>
               <View style={styles.nameContainer}>
-                <Text style={styles.nameTxt}>{item.Name}</Text>
+                <Text style={styles.nameTxt}>
+                  {item.Name} - {item.Type.replace("Team", "")} -{" "}
+                  {item["Team ID"]}
+                </Text>
               </View>
               <View style={styles.end}>
                 {item.taken ? (
@@ -115,7 +123,11 @@ export default class Calls extends Component {
       <View style={{ flex: 1 }}>
         {this.state.isLoading ? (
           <ActivityIndicator
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
             size="large"
             color="#0000ff"
           />
