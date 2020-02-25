@@ -92,9 +92,9 @@ export default class LoginView extends Component {
 
         <TouchableHighlight
           style={styles.buttonContainer}
-          onPress={() => {
+          onPress={async () => {
             try {
-              firebase.auth().sendPasswordResetEmail(this.state.email);
+              await firebase.auth().sendPasswordResetEmail(this.state.email);
               alert("Email has been sent !!");
             } catch (e) {
               alert(e);
