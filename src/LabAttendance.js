@@ -158,7 +158,7 @@ export default class Calls extends Component {
           extraData={this.state}
           data={this.state.participants}
           keyExtractor={item => {
-            return item.id;
+            return item.suid;
           }}
           renderItem={this.renderItem}
         />

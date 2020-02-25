@@ -55,7 +55,7 @@ class FoodChart extends Component {
     var breakfast1Time = snap.breakfast1Time;
     var lunch1Time = snap.lunch1Time;
     var day = snap.day;
-    console.log(breakfastTime, lunchTime);
+    // console.log(breakfastTime, lunchTime);
 
     for (var i in values) {
       for (var j in Object.keys(values[i])) {
@@ -86,14 +86,14 @@ class FoodChart extends Component {
         }
       }
     }
-    console.log(
-      breakfast.length,
-      lunch.length,
-      highTea.length,
-      dinner.length,
-      breakfast1.length,
-      lunch1.length
-    );
+    // console.log(
+    //   breakfast.length,
+    //   lunch.length,
+    //   highTea.length,
+    //   dinner.length,
+    //   breakfast1.length,
+    //   lunch1.length
+    // );
     this.setState({
       data: {
         labels: [

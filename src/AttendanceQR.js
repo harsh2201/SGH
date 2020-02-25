@@ -50,14 +50,14 @@ class AttendanceQR extends Component {
   checkUser = uuid => {
     this.setState({ isValid: false });
     var currUser = firebase.auth().currentUser.uid;
-    console.log(uuid);
+    // console.log(uuid);
     // var uuid = "00a24bb6def3ccea853a1d55399fc311";
     var labRef = database.ref("/lab");
     var volLabRef = labRef.child("/" + this.state.volLab);
     var log = database.ref("/log");
     // var user = database.ref("/user");
     labRef.child("flag").once("value", snap => {
-      console.log(snap.val());
+      // console.log(snap.val());
       if (snap.val() !== true) {
         alert("Scanning has not started. Please Contact your Coordinator");
         this.setState({ isloading: false });
@@ -71,7 +71,7 @@ class AttendanceQR extends Component {
           .then(snap => {
             if (snap.exists()) {
               this.setState({ isValid: true });
-              console.log("Participant exists");
+              // console.log("Participant exists");
             }
 
             if (!this.state.isValid) {
@@ -108,7 +108,7 @@ class AttendanceQR extends Component {
                   .child(uuid + "/")
                   .update({ taken: true, time: dateTime })
                   .then(async () => {
-                    console.log("Attendance Taken");
+                    // console.log("Attendance Taken");
                     //   await volLabRef
                     //     .child("count/")
                     //     .transaction(function(currentCount) {
@@ -121,10 +121,12 @@ class AttendanceQR extends Component {
                   .child(Date.now())
                   .update({ volunteer: currUser, time: dateTime })
                   .then(() => {
-                    console.log(Date.now());
+                    // console.log(Date.now());
                     // Toast.show("Successfully scanned"  );
-                    this.refs.toast.show("Successfully scanned !!");
-                    alert("Successfully scanned");
+                    this.refs.toast.show(
+                      "" + snap.val()["Name"] + " Successfully scanned !!"
+                    );
+                    // alert("Successfully scanned");
                     this.setState({ isloading: false });
                   });
               });

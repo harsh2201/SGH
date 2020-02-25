@@ -29,14 +29,14 @@ export default class FoodAnalysis extends Component {
         this.setState({ value: snap.val(), isLoding: false });
       });
       db.ref("/food").on("child_added", snap => {
-        console.log(snap);
+        // console.log(snap);
         this.setState({ foodCount: this.state.foodCount + 1 });
       });
       db.ref("/food/").on("value", snap => {
         this.setState({ foodCount: snap.numChildren() - 1 });
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
   changeSwitchStatus = async () => {
@@ -61,15 +61,28 @@ export default class FoodAnalysis extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.formContent}></View>
-        <Switch
-          style={{
-            transform: [{ scaleX: a }, { scaleY: a }],
-            alignSelf: "flex-end",
-            marginRight: width / 25
-          }}
-          value={this.state.value}
-          onChange={this.changeSwitchStatus}
-        ></Switch>
+        {firebase.auth().currentUser.email === "17dcs049@charusat.edu.in" ||
+        firebase.auth().currentUser.email === "17ce039@charusat.edu.in" ? (
+          <View
+            style={{
+              justifyContent: "center",
+              alignSelf: "center",
+              marginTop: 20,
+              flexDirection: "row"
+            }}
+          >
+            <Text style={{ marginRight: 3 }}>{"Food Scanning ON/OFF"}</Text>
+            <Switch
+              style={{
+                // transform: [{ scaleX: a }, { scaleY: a }],
+                alignSelf: "center",
+                marginRight: width / 25
+              }}
+              value={this.state.value}
+              onChange={this.changeSwitchStatus}
+            ></Switch>
+          </View>
+        ) : null}
         <View style={styles.foodContainer}>
           <Text style={{ fontSize: 25 }}>Current Food Count </Text>
           <Text style={{ fontSize: 25 }}>{this.state.foodCount} </Text>

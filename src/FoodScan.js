@@ -43,7 +43,7 @@ class FoodScan extends Component {
     var log = database.ref("/log");
     var user = database.ref("/user");
     food.child("flag").once("value", snap => {
-      console.log("flag:" + snap.val());
+      // console.log("flag:" + snap.val());
 
       if (snap.val() !== true) {
         alert("Scanning has not started.Please Contact your Coordinator");
@@ -56,13 +56,13 @@ class FoodScan extends Component {
         .once("value")
         .then(snap => {
           if (snap.exists()) {
-            this.setState({ isValid: true });
-            console.log("User exists");
+            this.setState({ isValid: true, Name: snap.val()["Name"] });
+            // console.log("User exists");
           }
 
           if (!this.state.isValid) {
             alert("No User found");
-            console.log("No User found");
+            // console.log("No User found");
             this.setState({ isloading: false });
             return;
           }
@@ -85,11 +85,11 @@ class FoodScan extends Component {
               },
               function(error, committed, snapshot) {
                 if (error) {
-                  console.log("Transaction failed abnormally!", error);
+                  // console.log("Transaction failed abnormally!", error);
                 } else if (!committed) {
-                  console.log(
-                    "We aborted the transaction (because ada already exists)."
-                  );
+                  // console.log(
+                  //   "We aborted the transaction (because ada already exists)."
+                  // );
                 } else {
                   log
                     .child("Food")
@@ -97,14 +97,14 @@ class FoodScan extends Component {
                     .child(Date.now())
                     .set(currUser)
                     .then(() => {
-                      console.log(Date.now());
+                      // console.log(Date.now());
                       // Toast.show("Successfully scanned");
-                      this.refs.toast.show("Successfully Scanned !!");
-                      alert("Successfully scanned");
+                      this.refs.toast.show("" + this.state.Name + " Successfully Scanned !!");
+                      // alert("Successfully scanned");
                       this.setState({ isloading: false });
                     });
                 }
-                console.log("Ada's data: ", snapshot.val());
+                // console.log("Ada's data: ", snapshot.val());
               }.bind(this)
             );
         });

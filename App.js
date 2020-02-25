@@ -21,7 +21,11 @@ export default class App extends Component {
   render() {
     // console.disableYellowBox = true;
     // console.log(Constants.statusBarHeight);
-    return <AppContainer />;
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <AppContainer />
+      </SafeAreaView>
+    );
   }
 }
 
@@ -63,8 +67,8 @@ const MainNavigator = createStackNavigator(
         headerShown: true
       }
     }
-  }
-  // { initialRouteName: "LabAnalysis" }
+  },
+  { initialRouteName: "LabAnalysis" }
 );
 
 const RootNavigator = createSwitchNavigator({

@@ -5,14 +5,23 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  Dimensions,
-  ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Picker,
+  Image,
+  Linking,
+  Alert
 } from "react-native";
 import firebase from "./config";
-import Spinner from "react-native-loading-spinner-overlay";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { Switch } from "react-native-paper";
+import {
+  Switch,
+  Button,
+  Modal,
+  Portal,
+  Provider,
+  Dialog,
+  Paragraph
+} from "react-native-paper";
 
 export default class Users extends Component {
   constructor(props) {
@@ -20,39 +29,81 @@ export default class Users extends Component {
     this.state = {
       isLoading: true,
       labAttendance: [],
-      labObj: {},
-      switch: false
+      // labObj: {},
+      switch: false,
+      visible: false
     };
   }
 
   async componentDidMount() {
-    db = firebase.database();
+    let db = firebase.database();
+    let data = {};
+    let labAttendance = [];
+    let jsonData = {};
+    let labWiseVol = {};
 
     // db.ref("lab/flag/").on("value", labSnap => {
     //   let flag = labSnap.val();
     //   this.setState({ switch: flag });
     // });
-    labRef = await db.ref("lab/").on("value", snap => {
-      let data = {};
-      let labAttendance = [];
-      let jsonData = snap.val();
+
+    // try {
+    //   db.ref("/AttendanceDates").once("value", snapshot => {
+    //     db.ref("log/lab/").on("value", snap => {
+    //       this.setState({ snap: snap.val() }, () =>
+    //         this.analysis(snapshot.val())
+    //       );
+    //     });
+    //   });
+    // } catch (e) {
+    //   alert(e);
+    // }
+
+    await db
+      .ref("volunteer/")
+      .once("value")
+      .then(snap => {
+        // console.log(snap.val());
+        jsonVol = snap.val();
+        labWiseVol = {};
+        for (item in jsonVol) {
+          // labWiseVol[item]
+          labWiseVol[jsonVol[item]["Lab"]] = jsonVol[item];
+          // console.log(item.Lab);
+        }
+        this.setState({ labWiseVol: labWiseVol });
+      });
+
+    // console.log(labWiseVol);
+
+    db.ref("lab/").on("value", snap => {
+      // console.log("Entered", snap.val());
+      data = {};
+      labAttendance = [];
+      jsonData = snap.val();
       // this.setState({  });
 
       this.setState({
-        labObj: jsonData,
-        labAttendance: [],
+        // labObj: jsonData,
+        // labAttendance: [],
         switch: jsonData["flag"]
       });
+      // if (jsonData["flag"] !== undefined) {
+      //   console.log("Exists");
+      // }
       delete jsonData["flag"];
 
-      for (lab in this.state.labObj) {
+      for (lab in jsonData) {
         if (lab !== "lab" || lab !== "flag") {
           data[lab] = {};
           data[lab]["present"] = 0;
+          data[lab]["call"] = this.state.labWiseVol[lab]["Mobile"];
+          data[lab]["Name"] = this.state.labWiseVol[lab]["Incharge"];
           data[lab]["total"] = 0;
-          for (part in this.state.labObj[lab]) {
-            if (this.state.labObj[lab][part]["taken"] === true) {
+          for (part in jsonData[lab]) {
+            if (jsonData[lab][part]["taken"] === true) {
               data[lab]["present"] += 1;
+              // console.log(this.state.labWiseVol[lab]);
             }
             data[lab]["total"] += 1;
           }
@@ -62,6 +113,7 @@ export default class Users extends Component {
         if (x !== "flag" || x !== "lab") {
           data[x]["lab"] = x;
           labAttendance.push(data[x]);
+          // console.log(data[x]["call"]);
         }
       }
       this.setState({
@@ -70,6 +122,34 @@ export default class Users extends Component {
       });
     });
   }
+
+  _handleCall = item => {
+    // console.log(item);
+    var url = `tel:${item.call}`;
+    this.setState({ currMobile: url });
+    Alert.alert(
+      "Attention",
+      "Call " + item.Name + " ?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel"
+        },
+        {
+          text: "Okay",
+          onPress: () => {
+            Linking.canOpenURL(this.state.currMobile).then(supported => {
+              if (supported) {
+                return Linking.openURL(this.state.currMobile).catch(() => null);
+              }
+            });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   renderItem = item => {
     return (
@@ -103,18 +183,11 @@ export default class Users extends Component {
               if (part !== undefined) {
                 // console.log(jsonData[lab][part]);
                 jsonData[lab][part]["taken"] = false;
-                // db.ref("lab/" + lab + "/" + part + "/").update({
-                //   taken: false
-                // });
-                // setTimeout(() => {
-                //   let db = firebase.database();
-
-                // }, 5);
               }
               // console.log(part);
             }
           }
-          console.log(jsonData);
+          // console.log(jsonData);
           db.ref("lab/").update(jsonData);
         })
         .catch(e => {
@@ -144,24 +217,47 @@ export default class Users extends Component {
             color="#0000ff"
           />
         ) : (
-          <View>
-            <View
-              style={{
-                justifyContent: "center",
-                alignSelf: "center",
-                marginTop: 20,
-                flexDirection: "row"
-              }}
-            >
-              <Text style={{ marginRight: 3 }}>Turn OFF Attendance</Text>
-              <Switch
-                value={this.state.switch}
-                onValueChange={() => {
-                  this.resetAttendance();
-                  // this.setState({ isSwitchOn: !false });
+          <View style={{ flex: 1 }}>
+            {/* <View style={{}}>
+              <Picker
+                selectedValue={this.state.language}
+                style={{
+                  height: 50,
+                  // width: 100,
+                  justifyContent: "center",
+                  alignItems: "center"
+                  // backgroundColor: "#000"
                 }}
-              />
-            </View>
+                onValueChange={(itemValue, itemIndex) =>
+                  this.setState({ language: itemValue })
+                }
+              >
+                <Picker.Item label="Day 1 - 1st Attendance" value="day00" />
+                <Picker.Item label="Day 1 - 2nd Attendance" value="day01" />
+                <Picker.Item label="Day 1 - 3rd Attendance" value="day02" />
+                <Picker.Item label="Day 2 - 1st Attendance" value="day10" />
+                <Picker.Item label="Day 2 - 2nd Attendance" value="day11" />
+              </Picker>
+            </View>   */}
+
+            {firebase.auth().currentUser.email === "17ce039@charusat.edu.in" ? (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  marginTop: 20,
+                  flexDirection: "row"
+                }}
+              >
+                <Text style={{ marginRight: 3 }}>{"Attendance ON/OFF"}</Text>
+                <Switch
+                  value={this.state.switch}
+                  onValueChange={() => {
+                    this.resetAttendance();
+                  }}
+                />
+              </View>
+            ) : null}
 
             <FlatList
               style={styles.list}
@@ -178,7 +274,6 @@ export default class Users extends Component {
                     <AnimatedCircularProgress
                       size={70}
                       width={10}
-                      // fill={100}
                       fill={(100 * item.present) / item.total}
                       tintColor="#00e0ff"
                       backgroundColor="#3d5875"
@@ -189,6 +284,19 @@ export default class Users extends Component {
                         </Text>
                       )}
                     </AnimatedCircularProgress>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this._handleCall(item);
+                      }}
+                    >
+                      <Image
+                        style={[styles.icon]}
+                        source={{
+                          uri:
+                            "https://img.icons8.com/doodle/240/000000/phone--v1.png"
+                        }}
+                      />
+                    </TouchableOpacity>
                   </View>
                 );
               }}
@@ -249,7 +357,8 @@ const styles = StyleSheet.create({
     color: "#FFFFFF"
   },
   icon: {
-    height: 20,
-    width: 20
+    height: 50,
+    width: 50,
+    marginHorizontal: 5
   }
 });
