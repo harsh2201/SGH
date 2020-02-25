@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 const { width, height } = Dimensions.get("window");
 import firebase from "../config";
 const db = firebase.database();
@@ -32,7 +25,11 @@ class FoodChart extends Component {
     });
   }
   analysis = snap => {
-    // console.log(snap);a
+    // console.log(snap);
+    if (this.state.snap === null) {
+      alert("No Data of food Found");
+      return;
+    }
     const values = Object.values(this.state.snap);
     var breakfast = [];
     var lunch = [];
@@ -59,7 +56,7 @@ class FoodChart extends Component {
     for (var i in values) {
       for (var j in Object.keys(values[i])) {
         var d = parseInt(Object.keys(values[i])[j]);
-        d = d * 1000;
+        // d = d * 1000;
         var date = new Date(d);
         if (date.getDate() === day[0]) {
           var dhours = date.getHours();

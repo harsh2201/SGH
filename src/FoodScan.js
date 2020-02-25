@@ -34,7 +34,6 @@ class FoodScan extends Component {
   };
 
   checkUser = uuid => {
-    console.log("gfh");
     this.setState({ isValid: false });
     var currUser = firebase.auth().currentUser.uid;
     // var uuid = "00a24bb6def3ccea853a1d55399fc311";
@@ -104,33 +103,6 @@ class FoodScan extends Component {
                 console.log("Ada's data: ", snapshot.val());
               }.bind(this)
             );
-
-          // food
-          //   .child(uuid)
-          //   .once("value")
-          //   .then(snap => {
-          //     if (snap.exists()) {
-          //       alert("Already scanned once");
-          //       this.setState({ isloading: false });
-
-          //       return;
-          //     }
-          //     console.log("not scanned");
-          //     food
-          //       .child(uuid)
-          //       .set(currUser)
-          //       .then(() => console.log("added in food"));
-          //     log
-          //       .child("Food")
-          //       .child(uuid)
-          //       .child(Date.now())
-          //       .set(currUser)
-          //       .then(() => {
-          //         console.log(Date.now());
-          //         Toast.show("Successfully scanned");
-          //         this.setState({ isloading: false });
-          //       });
-          //   });
         });
     });
   };
