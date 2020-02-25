@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, Dimensions, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
 import Spinner from "react-native-loading-spinner-overlay";
+import Toast from "react-native-whc-toast";
 const database = firebase.database();
 
 class FoodScan extends Component {
@@ -99,6 +100,7 @@ class FoodScan extends Component {
                     .then(() => {
                       console.log(Date.now());
                       // Toast.show("Successfully scanned");
+                      this.refs.toast.show("Successfully Scanned !!");
                       alert("Successfully scanned");
                       this.setState({ isloading: false });
                     });
@@ -181,6 +183,7 @@ class FoodScan extends Component {
           />
         )}
         {/* <Button title={"call"} onPress={this.checkUser} /> */}
+        <Toast ref="toast" />
       </View>
     );
   }

@@ -14,6 +14,7 @@ import { BarCodeScanner } from "expo-barcode-scanner";
 import firebase from "./config";
 const database = firebase.database();
 import Spinner from "react-native-loading-spinner-overlay";
+import Toast from "react-native-whc-toast";
 
 class AttendanceQR extends Component {
   constructor(props) {
@@ -122,6 +123,7 @@ class AttendanceQR extends Component {
                   .then(() => {
                     console.log(Date.now());
                     // Toast.show("Successfully scanned"  );
+                    this.refs.toast.show("Successfully scanned !!");
                     alert("Successfully scanned");
                     this.setState({ isloading: false });
                   });
@@ -173,6 +175,7 @@ class AttendanceQR extends Component {
           />
         )}
         {/* <Button title={"call"} onPress={this.checkUser} /> */}
+        <Toast ref="toast"></Toast>
       </View>
     );
   }
