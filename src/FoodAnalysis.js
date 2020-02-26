@@ -28,12 +28,12 @@ export default class FoodAnalysis extends Component {
       db.ref("/food/flag").on("value", snap => {
         this.setState({ value: snap.val(), isLoding: false });
       });
-      db.ref("/food").on("child_added", snap => {
+      db.ref("/food/user").on("child_added", snap => {
         // console.log(snap);
         this.setState({ foodCount: this.state.foodCount + 1 });
       });
-      db.ref("/food/").on("value", snap => {
-        this.setState({ foodCount: snap.numChildren() - 1 });
+      db.ref("/food/user").on("value", snap => {
+        this.setState({ foodCount: snap.numChildren() });
       });
     } catch (error) {
       // console.log(error);
