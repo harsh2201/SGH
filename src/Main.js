@@ -24,20 +24,20 @@ export default class Menu extends Component {
         {
           id: 0,
           title: "Lab Attendance",
-          color: "#FF4500",
+          color: "#FF6D00",
           image: "https://img.icons8.com/color/70/000000/name.png"
         },
 
         {
           id: 1,
           title: "Lab Attendance Analysis",
-          color: "#4682B4",
+          color: "#1A237E",
           image: "https://img.icons8.com/color/70/000000/two-hearts.png"
         },
         {
           id: 2,
           title: "Food Scan",
-          color: "#87CEEB",
+          color: "#c0392b",
           image: "https://img.icons8.com/office/70/000000/home-page.png"
         },
         {
@@ -48,6 +48,12 @@ export default class Menu extends Component {
         },
         {
           id: 4,
+          title: "Absent List",
+          color: "#007ee5",
+          image: "https://img.icons8.com/color/70/000000/family.png"
+        },
+        {
+          id: 5,
           title: "Sign Out",
           color: "red",
           image: "https://img.icons8.com/color/70/000000/family.png"
@@ -69,12 +75,15 @@ export default class Menu extends Component {
         .once("value")
         .then(dataSnapshot => {
           var access = dataSnapshot.val().Access;
-          // access = ["SC", "LV", "FC"];
+          // var access = ["SC", "LV", "FC"];
+          // var access = ["A"];
+
           var temp = [];
           access.forEach(access => {
             if (access === "SC") {
               if (!temp.includes(this.state.data[1])) {
                 temp.push(this.state.data[1]);
+                temp.push(this.state.data[4]);
               }
             }
             if (access === "LV") {
@@ -93,6 +102,7 @@ export default class Menu extends Component {
             if (access === "A") {
               if (!temp.includes(this.state.data[1])) {
                 temp.push(this.state.data[1]);
+                temp.push(this.state.data[4]);
               }
               if (!temp.includes(this.state.data[3])) {
                 temp.push(this.state.data[3]);
@@ -104,7 +114,7 @@ export default class Menu extends Component {
               }
             }
           });
-          temp.push(this.state.data[4]);
+          temp.push(this.state.data[5]);
           this.setState({ data: temp, visibility: false });
         });
     } catch (e) {
@@ -122,6 +132,8 @@ export default class Menu extends Component {
     } else if (id == 3) {
       this.props.navigation.navigate("FoodAnalysis");
     } else if (id == 4) {
+      this.props.navigation.navigate("AbsentList");
+    } else if (id == 5) {
       await firebase.auth().signOut();
     } else {
       alert("None found !!");

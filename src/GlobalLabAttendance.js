@@ -17,7 +17,7 @@ import { Avatar, PButton, Card, Title, Paragraph } from "react-native-paper";
 
 import firebase from "./config";
 
-export default class Calls extends Component {
+export default class GlobalLabAttendance extends Component {
   // static navigationOptions = ({ navigation }) => {
   //   return {
   //     title: navigation.getParam("otherParam", "A Nested Details Screen" + this.state.volLab)
@@ -28,7 +28,7 @@ export default class Calls extends Component {
     this.state = {
       participants: [],
       labFlag: false,
-      volLab: "",
+      volLab: this.props.navigation.state.params.lab,
       isLoading: true
     };
   }
@@ -37,22 +37,22 @@ export default class Calls extends Component {
     var db = firebase.database();
     var user = firebase.auth().currentUser;
     var uid = user.uid;
-    var volLab = "";
+    var volLab = this.state.volLab;
     var partis = [];
     var labFlag;
     var tempPartis;
 
-    //Fetching Volunteer's Lab No
-    volLab = await db
-      .ref("volunteer/" + uid + "/Lab/")
-      .once("value")
-      .then(snapshot => {
-        return snapshot.val();
-      })
-      .catch(e => {
-        alert(e);
-      });
-    this.setState({ volLab: volLab });
+    // //Fetching Volunteer's Lab No
+    // volLab = await db
+    //   .ref("volunteer/" + uid + "/Lab/")
+    //   .once("value")
+    //   .then(snapshot => {
+    //     return snapshot.val();
+    //   })
+    //   .catch(e => {
+    //     alert(e);
+    //   });
+    // this.setState({ volLab: volLab });
 
     // Fetching Volunteer's Lab participants
     await db.ref("lab/" + volLab + "/").on("value", snapshot => {
@@ -134,24 +134,6 @@ export default class Calls extends Component {
             size="large"
             color="#0000ff"
           />
-        ) : null}
-        {this.state.labFlag ? (
-          <Button
-            icon="qrcode"
-            mode="outlined"
-            style={{
-              marginHorizontal: Dimensions.get("window").width / 7,
-              marginVertical: 10
-              // backgroundColor: "#FF6501c5"
-            }}
-            onPress={() =>
-              this.props.navigation.navigate("AttendanceQR", {
-                volLab: this.state.volLab
-              })
-            }
-          >
-            Scan for attendance
-          </Button>
         ) : null}
 
         <FlatList

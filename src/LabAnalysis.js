@@ -36,28 +36,12 @@ export default class Users extends Component {
   }
 
   async componentDidMount() {
-    let db = firebase.database();
-    let data = {};
-    let labAttendance = [];
-    let jsonData = {};
-    let labWiseVol = {};
-
-    // db.ref("lab/flag/").on("value", labSnap => {
-    //   let flag = labSnap.val();
-    //   this.setState({ switch: flag });
-    // });
-
-    // try {
-    //   db.ref("/AttendanceDates").once("value", snapshot => {
-    //     db.ref("log/lab/").on("value", snap => {
-    //       this.setState({ snap: snap.val() }, () =>
-    //         this.analysis(snapshot.val())
-    //       );
-    //     });
-    //   });
-    // } catch (e) {
-    //   alert(e);
-    // }
+    var db = firebase.database();
+    var data = {};
+    var labAttendance = [];
+    var jsonData = {};
+    var labWiseVol = {};
+    var jsonVol = {};
 
     await db
       .ref("volunteer/")
@@ -66,7 +50,7 @@ export default class Users extends Component {
         // console.log(snap.val());
         jsonVol = snap.val();
         labWiseVol = {};
-        for (item in jsonVol) {
+        for (var item in jsonVol) {
           // labWiseVol[item]
           labWiseVol[jsonVol[item]["Lab"]] = jsonVol[item];
           // console.log(item.Lab);
@@ -93,14 +77,17 @@ export default class Users extends Component {
       // }
       delete jsonData["flag"];
 
-      for (lab in jsonData) {
+      for (var lab in jsonData) {
         if (lab !== "lab" || lab !== "flag") {
           data[lab] = {};
           data[lab]["present"] = 0;
           data[lab]["call"] = this.state.labWiseVol[lab]["Mobile"];
-          data[lab]["Name"] = this.state.labWiseVol[lab]["Incharge"];
+          data[lab]["Name"] =
+            this.state.labWiseVol[lab]["Incharge"] +
+            " - " +
+            this.state.labWiseVol[lab]["Email"];
           data[lab]["total"] = 0;
-          for (part in jsonData[lab]) {
+          for (var part in jsonData[lab]) {
             if (jsonData[lab][part]["taken"] === true) {
               data[lab]["present"] += 1;
               // console.log(this.state.labWiseVol[lab]);
@@ -109,7 +96,7 @@ export default class Users extends Component {
           }
         }
       }
-      for (x in data) {
+      for (var x in data) {
         if (x !== "flag" || x !== "lab") {
           data[x]["lab"] = x;
           labAttendance.push(data[x]);
@@ -153,33 +140,41 @@ export default class Users extends Component {
 
   renderItem = item => {
     return (
-      <View key={String(item.lab)} style={[styles.card]}>
-        <Text style={styles.title}>{item.lab}</Text>
-        <AnimatedCircularProgress
-          size={30}
-          width={3}
-          fill={item.present / item.total}
-          tintColor="#00e0ff"
-          backgroundColor="#3d5875"
-        >
-          {fill => <Text>{item.present}</Text>}
-        </AnimatedCircularProgress>
-      </View>
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate("GlobalLabAttendance", {
+            lab: item.lab
+          });
+        }}
+      >
+        <View key={String(item.lab)} style={[styles.card]}>
+          <Text style={styles.title}>{item.lab}</Text>
+          <AnimatedCircularProgress
+            size={30}
+            width={3}
+            fill={item.present / item.total}
+            tintColor="#00e0ff"
+            backgroundColor="#3d5875"
+          >
+            {fill => <Text>{item.present}</Text>}
+          </AnimatedCircularProgress>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   resetAttendance = async () => {
-    let db = firebase.database();
+    var db = firebase.database();
     this.setState({ isLoading: true });
     if (this.state.switch === false) {
       await db
         .ref("lab/")
         .once("value", async resetSnap => {
-          let jsonData = resetSnap.val();
+          var jsonData = resetSnap.val();
           delete jsonData["flag"];
 
-          for (lab in jsonData) {
-            for (part in jsonData[lab]) {
+          for (var lab in jsonData) {
+            for (var part in jsonData[lab]) {
               if (part !== undefined) {
                 // console.log(jsonData[lab][part]);
                 jsonData[lab][part]["taken"] = false;
@@ -191,13 +186,48 @@ export default class Users extends Component {
           db.ref("lab/").update(jsonData);
         })
         .catch(e => {
+          this.setState({ isLoading: false });
           alert(e);
         });
       this.setState({ isLoading: false });
+    } else if (this.state.switch === true) {
+      var absent = {};
+      await db
+        .ref("lab/")
+        .once("value", async resetSnap => {
+          var jsonData = resetSnap.val();
+          delete jsonData["flag"];
+
+          for (var lab in jsonData) {
+            for (var part in jsonData[lab]) {
+              if (part !== undefined) {
+                // console.log(jsonData[lab][part]);
+                if (jsonData[lab][part]["taken"] === false) {
+                  console.log(jsonData[lab][part]);
+                  db.ref(
+                    "AbsentList/" +
+                      "/" +
+                      jsonData[lab][part]["suid"] +
+                      "/" +
+                      Date.now()
+                  ).update(jsonData[lab][part]);
+                }
+                // jsonData[lab][part]["taken"] = false;
+              }
+              // console.log(part);
+            }
+          }
+          // console.log(jsonData);
+          // db.ref("lab/").update(jsonData);
+        })
+        .catch(e => {
+          alert(e);
+        });
     }
     try {
       await db.ref("lab/flag/").set(!this.state.switch);
     } catch (e) {
+      this.setState({ isLoading: false });
       alert(e);
     }
   };
@@ -269,7 +299,15 @@ export default class Users extends Component {
               }}
               renderItem={({ item }) => {
                 return (
-                  <View key={String(item.lab)} style={[styles.card]}>
+                  <View key={String(item.lab)}>
+                  <TouchableOpacity
+                    style={[styles.card]}
+                    onPress={() => {
+                      this.props.navigation.navigate("GlobalLabAttendance", {
+                        lab: item.lab
+                      });
+                    }}
+                  >
                     <Text style={styles.title}>{item.lab}</Text>
                     <AnimatedCircularProgress
                       size={70}
@@ -297,6 +335,7 @@ export default class Users extends Component {
                         }}
                       />
                     </TouchableOpacity>
+                  </TouchableOpacity>
                   </View>
                 );
               }}

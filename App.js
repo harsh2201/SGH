@@ -2,6 +2,8 @@ import React, { Component } from "react";
 // import { View, StatusBar } from "react-native";
 import Login from "./src/login";
 import FoodAnalysis from "./src/FoodAnalysis";
+import AbsentList from "./src/AbsentList";
+import GlobalLabAttendance from "./src/GlobalLabAttendance";
 import Main from "./src/Main";
 import {
   createAppContainer,
@@ -66,9 +68,21 @@ const MainNavigator = createStackNavigator(
       navigationOptions: {
         headerShown: true
       }
+    },
+    AbsentList: {
+      screen: AbsentList,
+      navigationOptions: {
+        headerShown: true
+      }
+    },
+    GlobalLabAttendance: {
+      screen: GlobalLabAttendance,
+      navigationOptions: {
+        headerShown: true
+      }
     }
   }
-  // { initialRouteName: "LabAnalysis" }
+  // { initialRouteName: "AbsentList" }
 );
 
 const RootNavigator = createSwitchNavigator({

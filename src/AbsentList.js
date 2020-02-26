@@ -17,7 +17,7 @@ import { Avatar, PButton, Card, Title, Paragraph } from "react-native-paper";
 
 import firebase from "./config";
 
-export default class Calls extends Component {
+export default class AbsentList extends Component {
   // static navigationOptions = ({ navigation }) => {
   //   return {
   //     title: navigation.getParam("otherParam", "A Nested Details Screen" + this.state.volLab)
@@ -35,39 +35,34 @@ export default class Calls extends Component {
 
   async componentDidMount() {
     var db = firebase.database();
-    var user = firebase.auth().currentUser;
-    var uid = user.uid;
-    var volLab = "";
     var partis = [];
-    var labFlag;
     var tempPartis;
 
-    //Fetching Volunteer's Lab No
-    volLab = await db
-      .ref("volunteer/" + uid + "/Lab/")
-      .once("value")
-      .then(snapshot => {
-        return snapshot.val();
-      })
-      .catch(e => {
-        alert(e);
-      });
-    this.setState({ volLab: volLab });
-
-    // Fetching Volunteer's Lab participants
-    await db.ref("lab/" + volLab + "/").on("value", snapshot => {
+    // Fetching Absent Lab participants
+    await db.ref("AbsentList/").on("value", snapshot => {
       tempPartis = snapshot.val();
       partis = [];
       for (var item in tempPartis) {
-        partis.push(tempPartis[item]);
+        partis.push(tempPartis[item][0]);
+        if (tempPartis[item] !== undefined) {
+          tempPartis[item]["count"] = 0;
+          var obj = {};
+          for (var x in tempPartis[item]) {
+            if (x !== "count") {
+              tempPartis[item]["count"] += 1;
+              obj = tempPartis[item][x];
+            }
+          }
+        }
+        obj["count"] = tempPartis[item]["count"];
+        if (obj !== undefined) {
+          partis.push(obj);
+        }
       }
+      partis = partis.filter(function(element) {
+        return element !== undefined;
+      });
       this.setState({ participants: partis });
-    });
-
-    // Checking if the attendance is ON or OFF
-    await db.ref("lab/flag/").on("value", async snapshot => {
-      labFlag = snapshot.val();
-      this.setState({ labFlag: labFlag });
     });
     this.setState({ isLoading: false });
   }
@@ -91,12 +86,15 @@ export default class Calls extends Component {
       <View>
         {item.Name ? (
           <View style={styles.row}>
-            <Image source={{ uri: icon }} style={styles.pic} />
+            <Text source={{ uri: icon }} style={styles.pic}>
+              {"Lab: "}
+              {item["lab"]}
+            </Text>
             <View>
               <View style={styles.nameContainer}>
                 <Text style={styles.nameTxt}>
-                  {item.Name} - {item.Type.replace("Team", "")} -{" "}
-                  {item["Team ID"]}
+                  {item["Name"]} {" - "} {item.Type.replace("Team", "")} {" - "}
+                  {item["Team ID"]} {" - Count: "} {item["count"]}
                 </Text>
               </View>
               <View style={styles.end}>
@@ -185,7 +183,9 @@ const styles = StyleSheet.create({
   pic: {
     borderRadius: 25,
     width: 50,
-    height: 50
+    height: 50,
+    fontSize: 20,
+    marginLeft: 3
   },
   nameContainer: {
     flexDirection: "row",
@@ -216,7 +216,5 @@ const styles = StyleSheet.create({
   icon: {
     height: 40,
     width: 40
-    // marginRight: 40
-    // backgroundColor: "red"
   }
 });
