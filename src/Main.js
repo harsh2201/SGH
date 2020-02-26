@@ -20,6 +20,7 @@ export default class Menu extends Component {
     super(props);
     this.state = {
       visibility: true,
+      odata: [],
       data: [
         {
           id: 0,
@@ -115,7 +116,7 @@ export default class Menu extends Component {
             }
           });
           temp.push(this.state.data[5]);
-          this.setState({ data: temp, visibility: false });
+          this.setState({ odata: temp, visibility: false });
         });
     } catch (e) {
       alert(e);
@@ -154,7 +155,7 @@ export default class Menu extends Component {
         <FlatList
           style={styles.list}
           contentContainerStyle={styles.listContainer}
-          data={this.state.data}
+          data={this.state.odata}
           horizontal={false}
           keyExtractor={item => {
             return String(item.id);

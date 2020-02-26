@@ -62,9 +62,10 @@ export default class AbsentList extends Component {
       partis = partis.filter(function(element) {
         return element !== undefined;
       });
-      this.setState({ participants: partis });
+      this.setState({ isLoading: false, participants: partis });
+      console.log("" + this.state.participants);
+      // this.setState({  });
     });
-    this.setState({ isLoading: false });
   }
 
   _handleCall = Mobile => {
@@ -132,24 +133,17 @@ export default class AbsentList extends Component {
             size="large"
             color="#0000ff"
           />
-        ) : null}
-        {this.state.labFlag ? (
-          <Button
-            icon="qrcode"
-            mode="outlined"
+        ) : this.state.participants.length === 0 ? (
+          <Image
             style={{
-              marginHorizontal: Dimensions.get("window").width / 7,
-              marginVertical: 10
-              // backgroundColor: "#FF6501c5"
+              width: Dimensions.get("window").width,
+              height: Dimensions.get("window").width
             }}
-            onPress={() =>
-              this.props.navigation.navigate("AttendanceQR", {
-                volLab: this.state.volLab
-              })
-            }
-          >
-            Scan for attendance
-          </Button>
+            source={{
+              uri:
+                "https://image.freepik.com/free-vector/no-data-concept-illustration_114360-536.jpg"
+            }}
+          />
         ) : null}
 
         <FlatList

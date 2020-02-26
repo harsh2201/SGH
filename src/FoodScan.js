@@ -56,7 +56,11 @@ class FoodScan extends Component {
         .once("value")
         .then(snap => {
           if (snap.exists()) {
-            this.setState({ isValid: true, Name: snap.val()["Name"] });
+            this.setState({
+              isValid: true,
+              Name: snap.val()["Name"],
+              Incharge: snap.val()["Incharge"]
+            });
             // console.log("User exists");
           }
 
@@ -99,7 +103,19 @@ class FoodScan extends Component {
                     .then(() => {
                       // console.log(Date.now());
                       // Toast.show("Successfully scanned");
-                      this.refs.toast.show("" + this.state.Name + " Successfully Scanned !!");
+                      if (this.state.Name === undefined) {
+                        if (this.state.Incharge === undefined) {
+                          this.refs.toast.show(" Successfully Scanned!");
+                        } else {
+                          this.refs.toast.show(
+                            "" + this.state.Incharge + " Successfully Scanned!"
+                          );
+                        }
+                      } else {
+                        this.refs.toast.show(
+                          "" + this.state.Name + " Successfully Scanned!"
+                        );
+                      }
                       // alert("Successfully scanned");
                       this.setState({ isloading: false });
                     });
